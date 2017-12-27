@@ -6,14 +6,13 @@ class GammaPipe:
 
 	def __init__(self):
 		# Set some standard test data
-		self._datadir = os.environ['TEST_DATA']
-		self._model   = self._datadir + '/crab.xml'
+		self._datadir = os.environ['TEST_DATA']  
 		self._caldb   = 'prod2'
 		self._irf     = 'South_0.5h'
 		print('initialised')
 		return
 		
-	def open_observation(self, filename):
+	def open_observation(self, obsfilename):
 		pntdir = gammalib.GSkyDir()
 		#read XML here
 		#From observation:
@@ -60,43 +59,44 @@ class GammaPipe:
 	
 		return obs
 
-	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
+	def run_pipeline(self, obs, , simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
 		# Set script parameters
 		events_name          = 'events.fits'
+		cubefile_name 	     = 'cube.fits'
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
 		
 
 		# Simulate events
 		sim = ctools.ctobssim(obs)
-		sim['inmodel']   = self._model
+		sim['inmodel']   = simfilename
 		sim['outevents'] = events_name
 		sim['caldb']     = self._caldb
 		sim['irf']       = self._irf
 		sim.execute()
 
-
+		#coordsys='GAL', proj='TAN',
 		bin = ctools.ctbin(obs)
-		bin['inobs']    = eventfile
-		bin['outcube']  = cubefile
+		bin['inobs']    = events_name
+		bin['outcube']  = cubefile_name
 		bin['ebinalg']  = 'LOG'
-		bin['emin']     = emin
-		bin['emax']     = emax
+		#bin['emin']     = emin
+		#bin['emax']     = emax
 		bin['enumbins'] = enumbins
 		bin['nxpix']    = nxpix
 		bin['nypix']    = nypix
 		bin['binsz']    = binsz
-		bin['coordsys'] = coordsys
+		bin['coordsys'] = 'GAL'
 		bin['usepnt']   = True # Use pointing for map centre
-		bin['proj']     = proj
+		bin['proj']     = 'TAN'
 		bin.execute()
 
 		# Set observation ID
-		bin.obs()[0].id(cubefile)
-		bin.obs()[0].eventfile(cubefile)
+		bin.obs()[0].id(cubefile_name)
+		bin.obs()[0].eventfile(cubefile_name)
 
 
 
