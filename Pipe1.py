@@ -16,7 +16,7 @@ def pipeline_binned_mem():
     usage = 'pipeline_binned_mem.py [-d datadir]'
 
     # Set default options
-    options = [{'option': '-o', 'obs': 'observation'}, {'option': '-s', 'sim': 'simmodel'}, {'option': '-a', 'an': 'analysismodel'}, {'option': '-c', 'conf': 'confpipe'},]
+    options = [{'option': '-o', 'obs': 'observation'}, {'option': '-s', 'sim': 'simmodel'}, {'option': '-a', 'an': 'analysismodel'}, {'option': '-c', 'conf': 'confpipe'}]
     
 
     # Get arguments and options from command line arguments

@@ -24,13 +24,17 @@ class ClassPipe:
 		#in_b
 		#in_tstart
 		#in_duration
+		#in_obsid
 		
+		#From target:
 		#in_emin
 		#in_emax
+		
+		#From instrument
 		#in_fov
 		#in_irf
 		#in_caldb
-		#in_obsid
+		
 		
 		if in_pnttype == 'celestial' :
 			pntdir.radec_deg(in_ra, in_dec)
@@ -80,26 +84,32 @@ class ClassPipe:
 		
 
 		# Select events
-		select = ctools.ctselect()
-		select['inobs']  = events_name
-		select['outobs'] = selected_events_name
-		select['ra']     = ra
-		select['dec']    = dec
-		select['rad']    = rad_select
-		select['tmin']   = tstart
-		select['tmax']   = tstop
-		select['emin']   = emin
-		select['emax']   = emax
-		select.execute()
+		# select = ctools.ctselect()
+# 		select['inobs']  = events_name
+# 		select['outobs'] = selected_events_name
+# 		select['ra']     = ra
+# 		select['dec']    = dec
+# 		select['rad']    = rad_select
+# 		select['tmin']   = tstart
+# 		select['tmax']   = tstop
+# 		select['emin']   = emin
+# 		select['emax']   = emax
+# 		select.execute()
 
 		# Perform maximum likelihood fitting
-		like = ctools.ctlike()
-		like['inobs']    = selected_events_name
-		like['inmodel']  = self._model
-		like['outmodel'] = result_name
-		like['caldb']    = self._caldb
-		like['irf']      = self._irf
-		like.execute()
+# 		like = ctools.ctlike()
+# 		like['inobs']    = selected_events_name
+# 		like['inmodel']  = self._model
+# 		like['outmodel'] = result_name
+# 		like['caldb']    = self._caldb
+# 		like['irf']      = self._irf
+# 		like.execute()
 
 		# Return
 		return
+		
+
+
+
+		
+
