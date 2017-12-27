@@ -39,10 +39,10 @@ def pipeline_binned():
 	obs = gp.open_observation(obsfilename)
 
 	# Setup simulation model
-	obs.models(gammalib.GModels(simfilename))
+	#obs.models(gammalib.GModels(simfilename))
 
 	# Run analysis pipeline
-	gp.run_pipeline(obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02)
+	gp.run_pipeline(obs, simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02)
 
 	# Return
 	return

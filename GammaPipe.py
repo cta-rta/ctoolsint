@@ -1,6 +1,7 @@
 import os
 import gammalib
 import ctools
+import obsutils
 
 class GammaPipe:
 
@@ -13,7 +14,7 @@ class GammaPipe:
 		return
 		
 	def open_observation(self, obsfilename):
-		pntdir = gammalib.GSkyDir()
+		
 		#read XML here
 		#From observation:
 		#in_pnttype -> celestial/equatorial or galactic
@@ -42,24 +43,27 @@ class GammaPipe:
 		self.in_duration =  300.0
 		self.in_emin                 =    0.1
 		self.in_emax                 =  100.0
-
+		self.in_obsid = 'OB1000'
+		
+		pntdir = gammalib.GSkyDir()
+		in_pnttype = 'celestial'
 
 		if in_pnttype == 'celestial' :
-			pntdir.radec_deg(in_ra, in_dec)
+			pntdir.radec_deg(self.in_ra, self.in_dec)
 	
 		if in_pnttype == 'equatorial' :
-			pntdir.radec_deg(in_ra, in_dec)
+			pntdir.radec_deg(self.in_ra, self.in_dec)
 
 		#if in_pnttype == 'galactic' :
-		#	pntdir.radec_deg(in_l, in_b)
+		#	pntdir.radec_deg(self.in_l, self.in_b)
 
-		obs = obsutils.set_obs(pntdir, in_tstart, in_duration, 1.0, \
-			in_emin, in_emax, in_fov, \
-			in_irf, in_caldb, in_obsid)
+		obs = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
+			self.in_emin, self.in_emax, self.in_fov, \
+			self._irf, self._caldb, self.in_obsid)
 	
 		return obs
 
-	def run_pipeline(self, obs, , simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
+	def run_pipeline(self, obs, simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
