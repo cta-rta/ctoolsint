@@ -2,7 +2,7 @@ import os
 import gammalib
 import ctools
 
-class ClassPipe:
+class GammaPipe:
 
 	def __init__(self):
 		# Set some standard test data
@@ -45,11 +45,13 @@ class ClassPipe:
 		#if in_pnttype == 'galactic' :
 		#	pntdir.radec_deg(in_l, in_b)
 		
-		self.obs = obsutils.set_obs(pntdir, in_tstart, in_duration, 1.0, \
+		obs = obsutils.set_obs(pntdir, in_tstart, in_duration, 1.0, \
             in_emin, in_emax, in_fov, \
-            in_irf, in_caldb, in_obsid):
+            in_irf, in_caldb, in_obsid)
+            
+        return obs
 
-	def test_unbinned_fits(self):
+	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
@@ -81,6 +83,26 @@ class ClassPipe:
 		sim['emax']      = emax
 		sim.execute()
 		
+		
+		bin = ctools.ctbin()
+        bin['inobs']    = eventfile
+        bin['outcube']  = cubefile
+        bin['ebinalg']  = 'LOG'
+        bin['emin']     = emin
+        bin['emax']     = emax
+        bin['enumbins'] = enumbins
+        bin['nxpix']    = nxpix
+        bin['nypix']    = nypix
+        bin['binsz']    = binsz
+        bin['coordsys'] = coordsys
+        bin['usepnt']   = True
+        bin['proj']     = proj
+        bin.execute()
+        
+        # Set observation ID
+        bin.obs()[0].id(cubefile)
+        bin.obs()[0].eventfile(cubefile)
+
 		
 
 		# Select events

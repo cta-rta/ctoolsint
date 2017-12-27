@@ -8,12 +8,12 @@ import GammaPipe
 # ============================= #
 # Run binned in-memory pipeline #
 # ============================= #
-def pipeline_binned_mem():
+def pipeline_binned():
     """
     Run binned pipeline
     """
     # Set usage string
-    usage = 'pipeline_binned_mem.py [-d datadir]'
+    usage = 'Pipe1.py [-d datadir] [-s simmodel] [-a analysismodel] [-c configuration pipe]'
 
     # Set default options
     options = [{'option': '-o', 'obs': 'observation'}, {'option': '-s', 'sim': 'simmodel'}, {'option': '-a', 'an': 'analysismodel'}, {'option': '-c', 'conf': 'confpipe'}]
@@ -30,15 +30,14 @@ def pipeline_binned_mem():
     
     gp = GammaPipe()
     
-    obs = gp.open_observation(obsfilename)
-
     # Setup observations
-
-    # Setup model
+    obs = gp.open_observation(obsfilename)
+    
+    # Setup simulation model
     obs.models(gammalib.GModels(simfilename))
 
     # Run analysis pipeline
-    run_pipeline(obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02)
+    gp.run_pipeline(obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02)
 
     # Return
     return
@@ -50,4 +49,4 @@ def pipeline_binned_mem():
 if __name__ == '__main__':
 
     # Run binned in-memory pipeline
-    pipeline_binned_mem()
+    pipeline_binned()
