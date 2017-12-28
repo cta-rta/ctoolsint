@@ -2,20 +2,28 @@ import os
 import gammalib
 import ctools
 import obsutils
+from read_xml import read_obs_xml
+
 
 class GammaPipe:
 
 	def __init__(self):
 		# Set some standard test data
-		self._datadir = os.environ['TEST_DATA']  
+		self._datadir = os.environ['TEST_DATA']
 		self._caldb   = 'prod2'
 		self._irf     = 'South_0.5h'
 		print('initialised')
 		return
-		
+
 	def open_observation(self, obsfilename):
-		
+
 		#read XML here
+		info_dict = read_obs_xml(obsfilename)
+
+		###usage: in_ra = info_dict['in_ra']
+
+		print info_dict
+
 		#From observation:
 		#in_pnttype -> celestial/equatorial or galactic
 		#in_ra
@@ -34,7 +42,7 @@ class GammaPipe:
 		#in_fov
 		#in_irf
 		#in_caldb
-		
+
 		self.in_ra                   =   83.63
 		self.in_dec                  =   22.01
 		self.in_fov              =   10.0
@@ -44,13 +52,13 @@ class GammaPipe:
 		self.in_emin                 =    0.1
 		self.in_emax                 =  100.0
 		self.in_obsid = 'OB1000'
-		
+
 		pntdir = gammalib.GSkyDir()
 		in_pnttype = 'celestial'
 
 		if in_pnttype == 'celestial' :
 			pntdir.radec_deg(self.in_ra, self.in_dec)
-	
+
 		if in_pnttype == 'equatorial' :
 			pntdir.radec_deg(self.in_ra, self.in_dec)
 
@@ -60,7 +68,7 @@ class GammaPipe:
 		obs = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
 			self.in_emin, self.in_emax, self.in_fov, \
 			self._irf, self._caldb, self.in_obsid)
-	
+
 		return obs
 
 	def run_pipeline(self, obs, simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
@@ -72,7 +80,7 @@ class GammaPipe:
 		cubefile_name 	     = 'cube.fits'
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
-		
+
 
 		# Simulate events
 		sim = ctools.ctobssim(obs)
@@ -128,9 +136,3 @@ class GammaPipe:
 
 		# Return
 		return
-		
-
-
-
-		
-
