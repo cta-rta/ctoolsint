@@ -78,7 +78,7 @@ class GammaPipe:
 		#print(obs1)
 		return obs
 
-	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02, debug=False):
+	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02, debug=False, seed=0):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
@@ -89,28 +89,47 @@ class GammaPipe:
 		result_name          = 'results.xml'
 
 		# Simulate events on disk
-		#sim = ctools.ctobssim()
+		#sim = ctools.ctobssim(obs)
 		#sim['outevents'] = events_name
 		#sim['debug'] = debug
+		#sim['seed']    = seed
 		#sim.execute()
 		
 		# Simulate events on memory
 		sim = ctools.ctobssim(obs)
 		sim['debug'] = debug
+		sim['seed']    = seed
 		sim.run()
 		
-		print('simulated ----------------------')
-		print(obs)
-		print(obs[0])
+		#Load events from fits file on memory
+		#sim = ctools.ctobssim(obs)
+		#events = sim.obs()[0].events()
+		#for event in events:
+		#	print(event)
+		#events.load(events_name)
+
+		print('event list generated ----------------------')
+		print(sim.obs())
+		print(sim.obs()[0])
 
 		for run in sim.obs():
+			print('run ---')
 			# Create container with a single observation
 			container = gammalib.GObservations()
 			container.append(run)
 			
-			bin = ctools.ctbin(container)
-			bin['inobs']    = events_name
+			#event file in memory or read from fits file on memory
+			bin = ctools.ctbin(container) 
+			
+			#event file on disk
+			#bin = ctools.ctbin() 
+			#bin['inobs']    = events_name
+			
+			
+			#make binned map on disk
 			bin['outcube']  = cubefile_name
+			
+			#common configs
 			bin['ebinalg']  = 'LOG'
 			bin['emin']     = self.in_emin
 			bin['emax']     = self.in_emax
@@ -121,16 +140,21 @@ class GammaPipe:
 			bin['coordsys'] = 'CEL'
 			bin['usepnt']   = True # Use pointing for map centre
 			bin['proj']     = 'CAR'
+			
+			#make binned map on disk
 			bin.execute()
+			#make binned map on memory
+			#bin.run()
 
-			# Set observation ID
+			# Set observation ID if make binned map on disk
 			bin.obs()[0].id(cubefile_name)
 			bin.obs()[0].eventfile(cubefile_name)
+			
 			# Append result to observations
 			obs.extend(bin.obs())
 
-		print(obs)
-		print(obs[0])
+		#print(obs)
+		#print(obs[0])
 
 		# Select events
 		# select = ctools.ctselect()
