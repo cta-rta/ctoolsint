@@ -10,13 +10,15 @@ class GammaPipe:
 	def __init__(self):
 		# Set some standard test data
 		self._datadir = os.environ['TEST_DATA']
-		self._caldb   = 'prod2'
-		self._irf     = 'South_0.5h'
+		self.caldb   = 'prod2'
+		self.irf     = 'South_0.5h'
 		print('initialised')
 		return
 
 	def open_observation(self, obsfilename):
 
+		obs = gammalib.GObservations()
+		
 		#read XML here
 		info_dict = read_obs_xml(obsfilename)
 
@@ -43,18 +45,20 @@ class GammaPipe:
 		#in_irf
 		#in_caldb
 
-		self.in_ra                   =   83.63
-		self.in_dec                  =   22.01
-		self.in_fov              =   10.0
-		#rad_select           =    3.0
-		self.in_tstart  =    0.0
-		self.in_duration =  300.0
-		self.in_emin                 =    0.1
-		self.in_emax                 =  100.0
-		self.in_obsid = 'OB1000'
+		self.in_ra       =   float(info_dict['in_ra'])
+		self.in_dec      =   float(info_dict['in_dec'])
+		self.in_fov      =   float(info_dict['in_fov'])
+		#rad_select      =    3.0
+		self.in_tstart   =   float(info_dict['in_tstart'])
+		self.in_duration =   float(info_dict['in_duration'])
+		self.in_emin     =   float(info_dict['in_emin'])
+		self.in_emax     =   float(info_dict['in_emax'])
+		self.caldb 		 =   info_dict['in_caldb'] 
+		self.irf	     =   info_dict['in_irf']
+		self.in_obsid    =   info_dict['in_obsid']
 
 		pntdir = gammalib.GSkyDir()
-		in_pnttype = 'celestial'
+		in_pnttype = info_dict['in_pnttype']
 
 		if in_pnttype == 'celestial' :
 			pntdir.radec_deg(self.in_ra, self.in_dec)
@@ -65,13 +69,16 @@ class GammaPipe:
 		#if in_pnttype == 'galactic' :
 		#	pntdir.radec_deg(self.in_l, self.in_b)
 
-		obs = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
+		obs1 = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
 			self.in_emin, self.in_emax, self.in_fov, \
-			self._irf, self._caldb, self.in_obsid)
+			self.irf, self.caldb, self.in_obsid)
+			
+		obs.append(obs1)
 
+		#print(obs1)
 		return obs
 
-	def run_pipeline(self, obs, simfilename, enumbins=1, nxpix=200, nypix=200, binsz=0.02):
+	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02, debug=False):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
@@ -81,36 +88,49 @@ class GammaPipe:
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
 
-
-		# Simulate events
+		# Simulate events on disk
+		#sim = ctools.ctobssim()
+		#sim['outevents'] = events_name
+		#sim['debug'] = debug
+		#sim.execute()
+		
+		# Simulate events on memory
 		sim = ctools.ctobssim(obs)
-		sim['inmodel']   = simfilename
-		sim['outevents'] = events_name
-		sim['caldb']     = self._caldb
-		sim['irf']       = self._irf
-		sim.execute()
+		sim['debug'] = debug
+		sim.run()
+		
+		print('simulated ----------------------')
+		print(obs)
+		print(obs[0])
 
-		#coordsys='GAL', proj='TAN',
-		bin = ctools.ctbin(obs)
-		bin['inobs']    = events_name
-		bin['outcube']  = cubefile_name
-		bin['ebinalg']  = 'LOG'
-		#bin['emin']     = emin
-		#bin['emax']     = emax
-		bin['enumbins'] = enumbins
-		bin['nxpix']    = nxpix
-		bin['nypix']    = nypix
-		bin['binsz']    = binsz
-		bin['coordsys'] = 'GAL'
-		bin['usepnt']   = True # Use pointing for map centre
-		bin['proj']     = 'TAN'
-		bin.execute()
+		for run in sim.obs():
+			# Create container with a single observation
+			container = gammalib.GObservations()
+			container.append(run)
+			
+			bin = ctools.ctbin(container)
+			bin['inobs']    = events_name
+			bin['outcube']  = cubefile_name
+			bin['ebinalg']  = 'LOG'
+			bin['emin']     = self.in_emin
+			bin['emax']     = self.in_emax
+			bin['enumbins'] = enumbins
+			bin['nxpix']    = nxpix
+			bin['nypix']    = nypix
+			bin['binsz']    = binsz
+			bin['coordsys'] = 'CEL'
+			bin['usepnt']   = True # Use pointing for map centre
+			bin['proj']     = 'CAR'
+			bin.execute()
 
-		# Set observation ID
-		bin.obs()[0].id(cubefile_name)
-		bin.obs()[0].eventfile(cubefile_name)
+			# Set observation ID
+			bin.obs()[0].id(cubefile_name)
+			bin.obs()[0].eventfile(cubefile_name)
+			# Append result to observations
+			obs.extend(bin.obs())
 
-
+		print(obs)
+		print(obs[0])
 
 		# Select events
 		# select = ctools.ctselect()

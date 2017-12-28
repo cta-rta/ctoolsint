@@ -1,0 +1,5 @@
+<data>
+<observation in_pnttype="equatorial" in_ra="83.63" in_dec="22.01" in_obsid="1" in_tstart="0.0" in_duration="100.0" />
+<target in_emin="0.1" in_emax="100"  />
+<instrument in_caldb="prod2" in_fov="10" in_irf="South_0.5h" />
+</data>
