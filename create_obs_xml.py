@@ -42,8 +42,8 @@ def create_obs_xml(obs_id,filename):
     in_caldb = str(row['caldb'])
 
     #New time reference start from 51544.5
-    in_tmin = str(float(in_tmin)-51544.5*86400)
-    in_tmax = str(float(in_tmax)-51544.5*86400)
+    in_tmin = str((float(in_tmin)-51544.5)*86400)
+    in_tmax = str((float(in_tmax)-51544.5)*86400)
 
     #TODO Convert coordinate to ra,dec
     in_ra = in_l
