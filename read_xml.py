@@ -1,5 +1,10 @@
-import xml.etree.ElementTree as ET
+# Copyright (c) 2017, AGILE team
+# Authors: Nicolo' Parmiggiani <nicolo.parmiggiani@gmail.com>,
+#
+# Any information contained in this software is property of the AGILE TEAM
+# and is strictly private and confidential. All rights reserved.
 
+import xml.etree.ElementTree as ET
 
 def read_obs_xml(filename):
 
@@ -8,19 +13,15 @@ def read_obs_xml(filename):
 
     info_dic = {}
 
-    for observation in root.iter('observation'):
-        for key in observation.attrib:
-                value =  observation.attrib[key]
-                info_dic[key] = value
-    for target in root.iter('target'):
-        for key in target.attrib:
-                value =  target.attrib[key]
-                info_dic[key] = value
-    for instrument in root.iter('instrument'):
-        for key in instrument.attrib:
-                value =  instrument.attrib[key]
-                info_dic[key] = value
+    print root.tag
+    info_dic[root.tag] = {}
 
+    for key in root.attrib:
+        value =  root.attrib[key]
+        info_dic[root.tag][key] = value
+
+    for child in root:
+        info_dic[root.tag][child.attrib['name']] = child.attrib
 
     return info_dic
 

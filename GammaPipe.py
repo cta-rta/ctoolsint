@@ -18,11 +18,11 @@ class GammaPipe:
 	def open_observation(self, obsfilename):
 
 		obs = gammalib.GObservations()
-		
+
 		#read XML here
 		info_dict = read_obs_xml(obsfilename)
 
-		###usage: in_ra = info_dict['in_ra']
+		###usage: in_ra = info_dict['observation']['Pointing']['ra']
 
 		print info_dict
 
@@ -45,34 +45,37 @@ class GammaPipe:
 		#in_irf
 		#in_caldb
 
-		self.in_ra       =   float(info_dict['in_ra'])
-		self.in_dec      =   float(info_dict['in_dec'])
-		self.in_fov      =   float(info_dict['in_fov'])
+		self.in_ra       =   float(info_dict['observation']['Pointing']['ra'])
+		self.in_dec      =   float(info_dict['observation']['Pointing']['dec'])
+		self.in_fov      =   float(info_dict['observation']['RegionOfInterest']['rad'])
 		#rad_select      =    3.0
-		self.in_tstart   =   float(info_dict['in_tstart'])
-		self.in_duration =   float(info_dict['in_duration'])
-		self.in_emin     =   float(info_dict['in_emin'])
-		self.in_emax     =   float(info_dict['in_emax'])
-		self.caldb 		 =   info_dict['in_caldb'] 
-		self.irf	     =   info_dict['in_irf']
-		self.in_obsid    =   info_dict['in_obsid']
+		self.in_tstart   =   float(info_dict['observation']['GoodTimeIntervals']['tmin'])
+		self.in_duration =   float(info_dict['observation']['GoodTimeIntervals']['tmax'])-float(info_dict['observation']['GoodTimeIntervals']['tmin'])
+		self.in_emin     =   float(info_dict['observation']['Energy']['emin'])
+		self.in_emax     =   float(info_dict['observation']['Energy']['emax'])
+		self.caldb 		 =   info_dict['observation']['Calibration']['database']
+		self.irf	     =   info_dict['observation']['Calibration']['response']
+		self.in_obsid    =   info_dict['observation']['id']
 
 		pntdir = gammalib.GSkyDir()
-		in_pnttype = info_dict['in_pnttype']
 
-		if in_pnttype == 'celestial' :
-			pntdir.radec_deg(self.in_ra, self.in_dec)
+		#in_pnttype = info_dict['in_pnttype']
 
-		if in_pnttype == 'equatorial' :
-			pntdir.radec_deg(self.in_ra, self.in_dec)
+		#if in_pnttype == 'celestial' :
+			#pntdir.radec_deg(self.in_ra, self.in_dec)
+
+		#if in_pnttype == 'equatorial' :
+			#pntdir.radec_deg(self.in_ra, self.in_dec)
 
 		#if in_pnttype == 'galactic' :
 		#	pntdir.radec_deg(self.in_l, self.in_b)
 
+		pntdir.radec_deg(self.in_ra, self.in_dec)
+
 		obs1 = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
 			self.in_emin, self.in_emax, self.in_fov, \
 			self.irf, self.caldb, self.in_obsid)
-			
+
 		obs.append(obs1)
 
 		#print(obs1)
@@ -94,13 +97,13 @@ class GammaPipe:
 		#sim['debug'] = debug
 		#sim['seed']    = seed
 		#sim.execute()
-		
+
 		# Simulate events on memory
 		sim = ctools.ctobssim(obs)
 		sim['debug'] = debug
 		sim['seed']    = seed
 		sim.run()
-		
+
 		#Load events from fits file on memory
 		#sim = ctools.ctobssim(obs)
 		#events = sim.obs()[0].events()
@@ -117,18 +120,18 @@ class GammaPipe:
 			# Create container with a single observation
 			container = gammalib.GObservations()
 			container.append(run)
-			
+
 			#event file in memory or read from fits file on memory
-			bin = ctools.ctbin(container) 
-			
+			bin = ctools.ctbin(container)
+
 			#event file on disk
-			#bin = ctools.ctbin() 
+			#bin = ctools.ctbin()
 			#bin['inobs']    = events_name
-			
-			
+
+
 			#make binned map on disk
 			bin['outcube']  = cubefile_name
-			
+
 			#common configs
 			bin['ebinalg']  = 'LOG'
 			bin['emin']     = self.in_emin
@@ -140,7 +143,7 @@ class GammaPipe:
 			bin['coordsys'] = 'CEL'
 			bin['usepnt']   = True # Use pointing for map centre
 			bin['proj']     = 'CAR'
-			
+
 			#make binned map on disk
 			bin.execute()
 			#make binned map on memory
@@ -149,7 +152,7 @@ class GammaPipe:
 			# Set observation ID if make binned map on disk
 			bin.obs()[0].id(cubefile_name)
 			bin.obs()[0].eventfile(cubefile_name)
-			
+
 			# Append result to observations
 			obs.extend(bin.obs())
 
