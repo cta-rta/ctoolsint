@@ -13,7 +13,7 @@ def read_obs_xml(filename):
 
     info_dic = {}
 
-    print root.tag
+    print(root.tag)
     info_dic[root.tag] = {}
 
     for key in root.attrib:
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     # read the XML for the specific observation
     filename = "/tmp/obs_1.xml"
     info_dic = read_obs_xml(filename)
-    print info_dic
+    print(info_dic)

@@ -2,86 +2,77 @@ import os
 import gammalib
 import ctools
 import obsutils
-from read_xml import read_obs_xml
+from Configuration import ObservationConfiguration
+from Configuration import RunConfiguration
 
 
 class GammaPipe:
 
 	def __init__(self):
-		# Set some standard test data
-		self._datadir = os.environ['TEST_DATA']
-		self.caldb   = 'prod2'
-		self.irf     = 'South_0.5h'
-		print('initialised')
+		return
+		
+	def init(self, obsfilename, simfilename, analysisfilename, runconffilename, eventfilename):
+		self.obsfilename = obsfilename
+		self.simfilename = simfilename
+		self.analysisfilename = analysisfilename
+		self.runconffilename = runconffilename
+		self.eventfilename = eventfilename
+		
+		# Setup observations
+		if self.obsfilename:
+			self.obs = self.open_observation(self.obsfilename)
+		
+		# Setup simulation model
+		if self.simfilename:
+			self.obs.models(gammalib.GModels(self.simfilename))
+			
+		# Setup run
+		if self.runconffilename:
+			self.runconf = RunConfiguration(self.runconffilename)
+			
 		return
 
 	def open_observation(self, obsfilename):
 
 		obs = gammalib.GObservations()
-
-		#read XML here
-		info_dict = read_obs_xml(obsfilename)
-
-		###usage: in_ra = info_dict['observation']['Pointing']['ra']
-
-		print info_dict
-
-		#From observation:
-		#in_pnttype -> celestial/equatorial or galactic
-		#in_ra
-		#in_dec
-		#in_l
-		#in_b
-		#in_tstart
-		#in_duration
-		#in_obsid
-
-		#From target:
-		#in_emin
-		#in_emax
-
-		#From instrument
-		#in_fov
-		#in_irf
-		#in_caldb
-
-		self.in_ra       =   float(info_dict['observation']['Pointing']['ra'])
-		self.in_dec      =   float(info_dict['observation']['Pointing']['dec'])
-		self.in_fov      =   float(info_dict['observation']['RegionOfInterest']['rad'])
-		#rad_select      =    3.0
-		self.in_tstart   =   float(info_dict['observation']['GoodTimeIntervals']['tmin'])
-		self.in_duration =   float(info_dict['observation']['GoodTimeIntervals']['tmax'])-float(info_dict['observation']['GoodTimeIntervals']['tmin'])
-		self.in_emin     =   float(info_dict['observation']['Energy']['emin'])
-		self.in_emax     =   float(info_dict['observation']['Energy']['emax'])
-		self.caldb 		 =   info_dict['observation']['Calibration']['database']
-		self.irf	     =   info_dict['observation']['Calibration']['response']
-		self.in_obsid    =   info_dict['observation']['id']
+		
+		self.obsconf = ObservationConfiguration(obsfilename)
 
 		pntdir = gammalib.GSkyDir()
 
 		#in_pnttype = info_dict['in_pnttype']
 
 		#if in_pnttype == 'celestial' :
-			#pntdir.radec_deg(self.in_ra, self.in_dec)
+			#pntdir.radec_deg(self.obs_ra, self.obs_dec)
 
 		#if in_pnttype == 'equatorial' :
-			#pntdir.radec_deg(self.in_ra, self.in_dec)
+			#pntdir.radec_deg(self.obs_ra, self.obs_dec)
 
 		#if in_pnttype == 'galactic' :
 		#	pntdir.radec_deg(self.in_l, self.in_b)
 
-		pntdir.radec_deg(self.in_ra, self.in_dec)
+		pntdir.radec_deg(self.obsconf.obs_ra, self.obsconf.obs_dec)
 
-		obs1 = obsutils.set_obs(pntdir, self.in_tstart, self.in_duration, 1.0, \
-			self.in_emin, self.in_emax, self.in_fov, \
-			self.irf, self.caldb, self.in_obsid)
+		obs1 = obsutils.set_obs(pntdir, self.obsconf.obs_tstart, self.obsconf.obs_duration, 1.0, \
+			self.obsconf.obs_emin, self.obsconf.obs_emax, self.obsconf.obs_fov, \
+			self.obsconf.obs_irf, self.obsconf.obs_caldb, self.obsconf.in_obsid)
 
 		obs.append(obs1)
 
 		#print(obs1)
 		return obs
-
-	def run_pipeline(self, obs, enumbins=1, nxpix=200, nypix=200, binsz=0.02, debug=False, seed=0):
+		
+	#rules
+	#1) if simfilename perform simulation based on observation configuration
+	#2) if eventfilename read the file. Select events based on run configuration
+	#3) if simfilename and eventfilename are not present, query the DB based on run and observation configuration
+	
+	#4) now that you have the event list in memory
+	#4.A) make cts map
+	#4.B) hypothesis generation (with spotfinders OR with the analysisfilename)
+	#4.C) if you have an hypothesis, perform MLE
+	
+	def run_pipeline(self, debug=False, seed=0):
 		"""
 		Test unbinned pipeline with FITS file saving
 		"""
@@ -90,26 +81,37 @@ class GammaPipe:
 		cubefile_name 	     = 'cube.fits'
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
+		
+		if self.simfilename and self.eventfilename:
+			print('error')
+			exit()
 
-		# Simulate events on disk
-		#sim = ctools.ctobssim(obs)
-		#sim['outevents'] = events_name
-		#sim['debug'] = debug
-		#sim['seed']    = seed
-		#sim.execute()
+		if self.simfilename:
+			if self.runconf.WorkInMemory == 0:
+				print('Generate simulated event list on disk')
+				# Simulate events on disk
+				sim = ctools.ctobssim(self.obs)
+				sim['outevents'] = events_name
+				sim['debug'] = debug
+				sim['seed']    = seed
+				sim.execute()
+				
+			if self.runconf.WorkInMemory == 1:
+				print('Generate simulated event list on memory')
+				# Simulate events on memory
+				sim = ctools.ctobssim(self.obs)
+				sim['debug'] = debug
+				sim['seed']    = seed
+				sim.run()
 
-		# Simulate events on memory
-		sim = ctools.ctobssim(obs)
-		sim['debug'] = debug
-		sim['seed']    = seed
-		sim.run()
-
-		#Load events from fits file on memory
-		#sim = ctools.ctobssim(obs)
-		#events = sim.obs()[0].events()
-		#for event in events:
-		#	print(event)
-		#events.load(events_name)
+		if self.eventfilename:
+			print('Load event list from disk')
+			#Load events from fits file on memory
+			sim = ctools.ctobssim(self.obs)
+			events = sim.obs()[0].events()
+			for event in events:
+				print(event)
+			events.load(events_name)
 
 		print('event list generated ----------------------')
 		print(sim.obs())
@@ -133,16 +135,16 @@ class GammaPipe:
 			bin['outcube']  = cubefile_name
 
 			#common configs
-			bin['ebinalg']  = 'LOG'
-			bin['emin']     = self.in_emin
-			bin['emax']     = self.in_emax
-			bin['enumbins'] = enumbins
-			bin['nxpix']    = nxpix
-			bin['nypix']    = nypix
-			bin['binsz']    = binsz
-			bin['coordsys'] = 'CEL'
-			bin['usepnt']   = True # Use pointing for map centre
-			bin['proj']     = 'CAR'
+			bin['ebinalg']  = self.runconf.cts_ebinalg
+			bin['emin']     = self.runconf.cts_emin
+			bin['emax']     = self.runconf.cts_emax
+			bin['enumbins'] = self.runconf.cts_enumbins
+			bin['nxpix']    = self.runconf.cts_nxpix
+			bin['nypix']    = self.runconf.cts_nypix
+			bin['binsz']    = self.runconf.cts_binsz
+			bin['coordsys'] = self.runconf.cts_coordsys
+			bin['usepnt']   = self.runconf.cts_usepnt # Use pointing for map centre
+			bin['proj']     = self.runconf.cts_proj
 
 			#make binned map on disk
 			bin.execute()
@@ -154,7 +156,7 @@ class GammaPipe:
 			bin.obs()[0].eventfile(cubefile_name)
 
 			# Append result to observations
-			obs.extend(bin.obs())
+			self.obs.extend(bin.obs())
 
 		#print(obs)
 		#print(obs[0])
@@ -177,8 +179,8 @@ class GammaPipe:
 		# 		like['inobs']    = selected_events_name
 		# 		like['inmodel']  = self._model
 		# 		like['outmodel'] = result_name
-		# 		like['caldb']    = self._caldb
-		# 		like['irf']      = self._irf
+		# 		like['obs_caldb']    = self._obs_caldb
+		# 		like['obs_irf']      = self._obs_irf
 		# 		like.execute()
 
 		# Return
