@@ -33,10 +33,13 @@ class GammaPipe:
 		return
 
 	def open_observation(self, obsfilename):
+	
+		print('Open observation')
 
 		obs = gammalib.GObservations()
 		
 		self.obsconf = ObservationConfiguration(obsfilename)
+		print(self.obsconf.obs_caldb)
 
 		pntdir = gammalib.GSkyDir()
 
@@ -81,6 +84,7 @@ class GammaPipe:
 		cubefile_name 	     = 'cube.fits'
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
+			
 		
 		if self.simfilename and self.eventfilename:
 			print('error')
@@ -112,10 +116,46 @@ class GammaPipe:
 			for event in events:
 				print(event)
 			events.load(events_name)
+			
+			# Select events
+			#TODO: non seleziona gli eventi (provare prima su file, poi in memory)
+			#e' probabile che i tempi non siano corretti
+			print('select event list')
+			select = ctools.ctselect(sim.obs())
+			#using file
+			#select = ctools.ctselect()
+			#select['inobs']  = events_name
+			#select['outobs'] = selected_events_name
+			select['ra']     = self.runconf.roi_ra
+			select['dec']    = self.runconf.roi_dec
+			select['rad']    = self.obsconf.obs_fov
+			select['tmin']   = self.runconf.tmin
+			#select['tmin'] = 55197.0007660185
+			select['tmax']   = self.runconf.tmax
+			#select['tmax']   = 55197.0007660185 + self.runconf.tmax / 86400.
+			select['emin']   = self.runconf.emin
+			select['emax']   = self.runconf.emax
+			select.run()
+			#select.execute()
+			#print(self.runconf.roi_ra)
+			#print(self.runconf.roi_dec)
+			#print(self.obsconf.obs_fov)
+			#print(self.runconf.tmin)
+			#print(self.runconf.tmax)
+			#print(self.runconf.emin)
+			#print(self.runconf.emax)
+			#print(select.obs()[0])
+			### Alla fine bisogna passare la lista selezionata a sim.obs()
 
+			
+		if not self.simfilename and not self.eventfilename:
+			#load from DB
+			print('load event list from DB')
+			
+			
 		print('event list generated ----------------------')
-		print(sim.obs())
-		print(sim.obs()[0])
+		#print(sim.obs())
+		#print(sim.obs()[0])
 
 		for run in sim.obs():
 			print('run ---')
@@ -136,8 +176,8 @@ class GammaPipe:
 
 			#common configs
 			bin['ebinalg']  = self.runconf.cts_ebinalg
-			bin['emin']     = self.runconf.cts_emin
-			bin['emax']     = self.runconf.cts_emax
+			bin['emin']     = self.runconf.emin
+			bin['emax']     = self.runconf.emax
 			bin['enumbins'] = self.runconf.cts_enumbins
 			bin['nxpix']    = self.runconf.cts_nxpix
 			bin['nypix']    = self.runconf.cts_nypix
@@ -158,30 +198,20 @@ class GammaPipe:
 			# Append result to observations
 			self.obs.extend(bin.obs())
 
-		#print(obs)
-		#print(obs[0])
-
-		# Select events
-		# select = ctools.ctselect()
-		# 		select['inobs']  = events_name
-		# 		select['outobs'] = selected_events_name
-		# 		select['ra']     = ra
-		# 		select['dec']    = dec
-		# 		select['rad']    = rad_select
-		# 		select['tmin']   = tstart
-		# 		select['tmax']   = tstop
-		# 		select['emin']   = emin
-		# 		select['emax']   = emax
-		# 		select.execute()
-
-		# Perform maximum likelihood fitting
-		# 		like = ctools.ctlike()
-		# 		like['inobs']    = selected_events_name
-		# 		like['inmodel']  = self._model
-		# 		like['outmodel'] = result_name
-		# 		like['obs_caldb']    = self._obs_caldb
-		# 		like['obs_irf']      = self._obs_irf
-		# 		like.execute()
+			#print(obs)
+			#print(obs[0])
+			print(str(self.obsconf.obs_caldb))
+			#TODO: eseguire MLE
+			if self.analysisfilename:
+				print('MLE')
+				# Perform maximum likelihood fitting
+				like = ctools.ctlike(sim.obs())
+				#like['inobs']    = selected_events_name
+				like['inmodel']  = self.analysisfilename
+				like['outmodel']  = result_name
+				like['caldb'] = str(self.obsconf.obs_caldb)
+				like['irf']      = self.obsconf.obs_irf
+				like.execute()
 
 		# Return
 		return

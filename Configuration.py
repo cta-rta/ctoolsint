@@ -19,16 +19,16 @@ class RunConfiguration:
 		self.roi_AlertContour = info_dict['run']['RegionOfInterest']['AlertContour']
 			
 		#Time
-		self.roi_tmin = float(info_dict['run']['TimeIntervals']['tmin'])
-		self.roi_tmin = float(info_dict['run']['TimeIntervals']['tmax'])
+		self.tmin = float(info_dict['run']['TimeIntervals']['tmin'])
+		self.tmax = float(info_dict['run']['TimeIntervals']['tmax'])
 		
 		#Energy
-		self.cts_emin = float(info_dict['run']['Energy']['emin'])
-		self.cts_emax = float(info_dict['run']['Energy']['emin'])
+		self.emin = float(info_dict['run']['Energy']['emin'])
+		self.emax = float(info_dict['run']['Energy']['emax'])
 		if info_dict['run']['Energy']['energyBinID']:
-			self.cts_energyBinID = int(info_dict['run']['CountsMap']['energyBinID'])
+			self.energyBinID = int(info_dict['run']['Energy']['energyBinID'])
 		else:
-			self.cts_energyBinID = -1
+			self.energyBinID = -1
 			
 		#pipe configuration
 		self.WorkInMemory = int(info_dict['run']['WorkInMemory']['value'])
@@ -88,3 +88,5 @@ class ObservationConfiguration:
 		self.obs_caldb 		 =   info_dict['observation']['Calibration']['database']
 		self.obs_irf	     =   info_dict['observation']['Calibration']['response']
 		self.in_obsid    =   info_dict['observation']['id']
+		
+		

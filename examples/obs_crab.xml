@@ -1,6 +1,6 @@
 <observation id="1" instrument="CTA" name="Crab">
   <parameter name="Pointing" ra="83.6331" dec="22.0145"  />
-  <parameter name="GoodTimeIntervals" tmin="0.0" tmax="10.0"  />
+  <parameter name="GoodTimeIntervals" tmin="0.0" tmax="1000.0"  />
   <parameter mjdreff="0.5" mjdrefi="51544" name="TimeReference" timeref="LOCAL" timesys="TT" timeunit="s" />
   <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" rad="10" />
   <parameter name="Deadtime" deadc="1"  />
