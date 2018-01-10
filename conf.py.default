@@ -8,5 +8,6 @@ def get_conf():
     password = ''
     database = ''
     port = ''
+    evt-database = ''
 
-    return {'host':host,'username':username,'password':password,'database':database,'port':port}
+    return {'host':host,'username':username,'password':password,'database':database,'port':port,'evt-database':evt-database}

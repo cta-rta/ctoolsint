@@ -31,6 +31,9 @@ def create_obs_xml(obs_id,filename):
 
     row = cursor.fetchone()
 
+    cursor.close()
+    conn.close()
+
     in_l = str(row['lon'])
     in_b = str(row['lat'])
     in_tmin = str(row['tstartreal'])
