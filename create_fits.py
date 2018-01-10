@@ -83,16 +83,16 @@ def write_fits(tstart,tstop,observationid,filename):
     #convert coordinate from galactic to celestial (icrs)
     obs_gal_coord = SkyCoord(observation_parameters['lon'],observation_parameters['lat'], unit='deg', frame='galactic')
 
-    print obs_gal_coord
+    #print obs_gal_coord
     obs_icrs_coord = obs_gal_coord.icrs
 
-    print obs_icrs_coord
+    #print obs_icrs_coord
 
     obs_ra = str(obs_icrs_coord.ra.degree)
     obs_dec = str(obs_icrs_coord.dec.degree)
 
-    print obs_ra
-    print obs_dec
+    #print obs_ra
+    #print obs_dec
 
     #change header content
     data_tbhdu.header['NAXIS2'] = len(events)
