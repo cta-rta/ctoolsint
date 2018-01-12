@@ -1,8 +1,11 @@
 <run id="1">
   <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" skypositiontype="" ringrad="" AlertContour="" />
-  <parameter name="TimeIntervals" tmin="0.0" tmax="100.0"  />
+  <parameter name="TimeIntervals" tmin="55197.0007660185" tmax="55197.0224326852"  />
   <parameter mjdreff="0.5" mjdrefi="51544" name="TimeReference" timeref="LOCAL" timesys="TT" timeunit="s" />
   <parameter name="Energy"  emin="0.1"  emax="100" energyBinID="" />
-  <parameter name="WorkInMemory" value="0"  />
+  <parameter name="WorkInMemory" value="1"  />
+  <parameter name="MakeCtsMap" value="1" />
   <parameter name="CountsMap" enumbins="1" nxpix="200" nypix="200" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="True" />
+  <parameter name="HypothesisGenerator" value="" />
+  <parameter name="CtsMapToPng" value="" />
 </run>

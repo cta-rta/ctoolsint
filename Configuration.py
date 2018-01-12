@@ -32,6 +32,7 @@ class RunConfiguration:
 			
 		#pipe configuration
 		self.WorkInMemory = int(info_dict['run']['WorkInMemory']['value'])
+		self.MakeCtsMap = int(info_dict['run']['MakeCtsMap']['value'])
 		#print(info_dict['run']['WorkInMemory']['value'])
 		
 		#counts map parameters
@@ -88,5 +89,6 @@ class ObservationConfiguration:
 		self.obs_caldb 		 =   info_dict['observation']['Calibration']['database']
 		self.obs_irf	     =   info_dict['observation']['Calibration']['response']
 		self.in_obsid    =   info_dict['observation']['id']
+		
 		
 		

@@ -21,11 +21,7 @@ class GammaPipe:
 		# Setup observations
 		if self.obsfilename:
 			self.obs = self.open_observation(self.obsfilename)
-		
-		# Setup simulation model
-		if self.simfilename:
-			self.obs.models(gammalib.GModels(self.simfilename))
-			
+					
 		# Setup run
 		if self.runconffilename:
 			self.runconf = RunConfiguration(self.runconffilename)
@@ -66,8 +62,8 @@ class GammaPipe:
 		return obs
 		
 	#rules
-	#1) if simfilename perform simulation based on observation configuration
-	#2) if eventfilename read the file. Select events based on run configuration
+	#1) if simfilename perform simulation based on observation configuration. Do not select events based on run configuration
+	#2) if eventfilename is present, read the file. Select events based on run configuration
 	#3) if simfilename and eventfilename are not present, query the DB based on run and observation configuration
 	
 	#4) now that you have the event list in memory
@@ -88,115 +84,162 @@ class GammaPipe:
 		
 		if self.simfilename and self.eventfilename:
 			print('error')
-			exit()
+			exit(10)
+			
+		############ Simulate events
 
 		if self.simfilename:
+		
+			# Setup simulation model
+			if self.simfilename:
+				self.obs.models(gammalib.GModels(self.simfilename))
+		
 			if self.runconf.WorkInMemory == 0:
-				print('Generate simulated event list on disk')
+				print('# Generate simulated event list on disk')
 				# Simulate events on disk
 				sim = ctools.ctobssim(self.obs)
 				sim['outevents'] = events_name
 				sim['debug'] = debug
 				sim['seed']    = seed
 				sim.execute()
+				self.eventfilename = events_name
 				
 			if self.runconf.WorkInMemory == 1:
-				print('Generate simulated event list on memory')
+				print('# Generate simulated event list in memory')
 				# Simulate events on memory
 				sim = ctools.ctobssim(self.obs)
 				sim['debug'] = debug
 				sim['seed']    = seed
 				sim.run()
+				
+		############ Get events from DB
+		
+		if not self.simfilename and not self.eventfilename:
+			#load from DB
+			print('# Load event list from DB')
+			#write selected_events_name
+			
+			if self.runconf.WorkInMemory == 2:
+				print('# Load event list from disk')
+				#Load events from fits file on memory
+				sim = ctools.ctobssim(self.obs)
+				events = sim.obs()[0].events()
+				for event in events:
+					print(event)
+				
+				#events.load(events_name)
+				events.load(selected_events_name)
 
-		if self.eventfilename:
-			print('Load event list from disk')
+			
+		############ Select events
+		
+		if self.runconf.WorkInMemory == 1:
+			print('# Select event list in memory')
+			select = ctools.ctselect(sim.obs())
+			
+		#using file
+		if self.runconf.WorkInMemory == 0:
+			print('# Select event list from disk')
+			select = ctools.ctselect()
+			select['inobs']  = events_name
+			select['outobs'] = selected_events_name
+			
+		select['ra']     = self.runconf.roi_ra
+		select['dec']    = self.runconf.roi_dec
+		select['rad']    = self.obsconf.obs_fov
+		select['tmin']   = 'MJD ' + str(self.runconf.tmin)
+		#select['tmin']   = 'INDEF'
+		#select['tmin'] = 0.0
+		#select['tmin'] = 'MJD 55197.0007660185'
+		#select['tmax']   = self.runconf.tmax
+		#select['tmax']   = 'INDEF'
+		select['tmax']   = 'MJD ' + str(self.runconf.tmax)
+		#select['tmax']   = 55197.0007660185 + self.runconf.tmax / 86400.
+		select['emin']   = self.runconf.emin
+		select['emax']   = self.runconf.emax
+		
+		if self.runconf.WorkInMemory == 1:
+			select.run()
+			
+		if self.runconf.WorkInMemory == 0:
+			select.execute()
+			
+		#print(self.runconf.roi_ra)
+		#print(self.runconf.roi_dec)
+		#print(self.obsconf.obs_fov)
+		#print(self.runconf.tmin)
+		#print(self.runconf.tmax)
+		#print(self.runconf.emin)
+		#print(self.runconf.emax)
+		#print(select.obs()[0])
+		
+		if self.runconf.WorkInMemory == 2:
+			print('# Load event list from disk')
 			#Load events from fits file on memory
 			sim = ctools.ctobssim(self.obs)
 			events = sim.obs()[0].events()
 			for event in events:
 				print(event)
-			events.load(events_name)
 			
-			# Select events
-			#TODO: non seleziona gli eventi (provare prima su file, poi in memory)
-			#e' probabile che i tempi non siano corretti
-			print('select event list')
-			select = ctools.ctselect(sim.obs())
-			#using file
-			#select = ctools.ctselect()
-			#select['inobs']  = events_name
-			#select['outobs'] = selected_events_name
-			select['ra']     = self.runconf.roi_ra
-			select['dec']    = self.runconf.roi_dec
-			select['rad']    = self.obsconf.obs_fov
-			select['tmin']   = self.runconf.tmin
-			#select['tmin'] = 55197.0007660185
-			select['tmax']   = self.runconf.tmax
-			#select['tmax']   = 55197.0007660185 + self.runconf.tmax / 86400.
-			select['emin']   = self.runconf.emin
-			select['emax']   = self.runconf.emax
-			select.run()
-			#select.execute()
-			#print(self.runconf.roi_ra)
-			#print(self.runconf.roi_dec)
-			#print(self.obsconf.obs_fov)
-			#print(self.runconf.tmin)
-			#print(self.runconf.tmax)
-			#print(self.runconf.emin)
-			#print(self.runconf.emax)
-			#print(select.obs()[0])
-			### Alla fine bisogna passare la lista selezionata a sim.obs()
+			#events.load(events_name)
+			events.load(selected_events_name)
+			
+		print('Event list generated ----------------------')
+		if self.runconf.WorkInMemory == 0:
+			print(self.obs)
+			print(self.obs[0])
+			localobs = self.obs
+			
+		if self.runconf.WorkInMemory == 1:
+			print(select.obs())
+			print(select.obs()[0])
+			localobs = select.obs()
 
-			
-		if not self.simfilename and not self.eventfilename:
-			#load from DB
-			print('load event list from DB')
-			
-			
-		print('event list generated ----------------------')
-		#print(sim.obs())
-		#print(sim.obs()[0])
-
-		for run in sim.obs():
+		for run in localobs:
 			print('run ---')
 			# Create container with a single observation
 			container = gammalib.GObservations()
 			container.append(run)
 
-			#event file in memory or read from fits file on memory
-			bin = ctools.ctbin(container)
 
-			#event file on disk
-			#bin = ctools.ctbin()
-			#bin['inobs']    = events_name
+			if self.runconf.MakeCtsMap == 1:
+				#event file in memory or read from fits file on memory
+				if self.runconf.WorkInMemory == 1:
+					bin = ctools.ctbin(container)
 
+				if self.runconf.WorkInMemory == 0:
+					#event file on disk
+					bin = ctools.ctbin()
+					bin['inobs']    = selected_events_name
 
-			#make binned map on disk
-			bin['outcube']  = cubefile_name
+				#make binned map on disk
+				bin['outcube']  = cubefile_name
 
-			#common configs
-			bin['ebinalg']  = self.runconf.cts_ebinalg
-			bin['emin']     = self.runconf.emin
-			bin['emax']     = self.runconf.emax
-			bin['enumbins'] = self.runconf.cts_enumbins
-			bin['nxpix']    = self.runconf.cts_nxpix
-			bin['nypix']    = self.runconf.cts_nypix
-			bin['binsz']    = self.runconf.cts_binsz
-			bin['coordsys'] = self.runconf.cts_coordsys
-			bin['usepnt']   = self.runconf.cts_usepnt # Use pointing for map centre
-			bin['proj']     = self.runconf.cts_proj
+				#common configs
+				bin['ebinalg']  = self.runconf.cts_ebinalg
+				bin['emin']     = self.runconf.emin
+				bin['emax']     = self.runconf.emax
+				bin['enumbins'] = self.runconf.cts_enumbins
+				bin['nxpix']    = self.runconf.cts_nxpix
+				bin['nypix']    = self.runconf.cts_nypix
+				bin['binsz']    = self.runconf.cts_binsz
+				bin['coordsys'] = self.runconf.cts_coordsys
+				bin['usepnt']   = self.runconf.cts_usepnt # Use pointing for map centre
+				bin['proj']     = self.runconf.cts_proj
 
-			#make binned map on disk
-			bin.execute()
-			#make binned map on memory
-			#bin.run()
+				#make binned map on disk
+				if self.runconf.WorkInMemory == 0:
+					bin.execute()
+					# Set observation ID if make binned map on disk
+					bin.obs()[0].id(cubefile_name)
+					bin.obs()[0].eventfile(cubefile_name)
+				
+				#make binned map on memory
+				if self.runconf.WorkInMemory == 1:
+					bin.run()
 
-			# Set observation ID if make binned map on disk
-			bin.obs()[0].id(cubefile_name)
-			bin.obs()[0].eventfile(cubefile_name)
-
-			# Append result to observations
-			self.obs.extend(bin.obs())
+				# Append result to observations
+				#localobs.extend(bin.obs())
 
 			#print(obs)
 			#print(obs[0])
@@ -205,13 +248,22 @@ class GammaPipe:
 			if self.analysisfilename:
 				print('MLE')
 				# Perform maximum likelihood fitting
-				like = ctools.ctlike(sim.obs())
-				#like['inobs']    = selected_events_name
+				
+				if self.runconf.WorkInMemory == 1:
+					like = ctools.ctlike(select.obs())
+				
+				if self.runconf.WorkInMemory == 0:
+					like = ctools.ctlike()
+					like['inobs']    = selected_events_name
+				
 				like['inmodel']  = self.analysisfilename
 				like['outmodel']  = result_name
 				like['caldb'] = str(self.obsconf.obs_caldb)
 				like['irf']      = self.obsconf.obs_irf
+				like['statistic'] = 'DEFAULT'
 				like.execute()
+				logL = like.opt().value()
+				print(logL)
 
 		# Return
 		return
