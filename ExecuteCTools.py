@@ -1,13 +1,31 @@
+# ==========================================================================
+# Helper class for ctools integration into the Science Alert Generation system
+#
+# Copyright (C) 2018 Andrea Bulgarelli, Nicolò Parmiggiani
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# ==========================================================================
+
 import os
 import gammalib
 import ctools
 import cscripts
-import GammaPipe
+import CToolsGammaPipe
 
 
-# ============================= #
-# Run binned in-memory pipeline #
-# ============================= #
+
 def pipeline_binned():
 	print('Run binned pipeline')
 	"""
@@ -36,7 +54,7 @@ def pipeline_binned():
 	print(runconffilename)
 	print(eventfilename)
 
-	gp = GammaPipe.GammaPipe()
+	gp = CToolsGammaPipe.CToolsGammaPipe()
 	
 	gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
 

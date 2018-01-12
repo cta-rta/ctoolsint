@@ -1,12 +1,32 @@
+# ==========================================================================
+# Main class for ctools integration into the Science Alert Generation system
+#
+# Copyright (C) 2018 Andrea Bulgarelli, Nicolò Parmiggiani
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# ==========================================================================
+
 import os
 import gammalib
 import ctools
 import obsutils
-from Configuration import ObservationConfiguration
-from Configuration import RunConfiguration
+from GammaPipeCommon.Configuration import ObservationConfiguration
+from GammaPipeCommon.Configuration import RunConfiguration
 
 
-class GammaPipe:
+class CToolsGammaPipe:
 
 	def __init__(self):
 		return
