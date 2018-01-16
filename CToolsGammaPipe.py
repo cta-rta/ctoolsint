@@ -24,7 +24,7 @@ import ctools
 import obsutils
 from GammaPipeCommon.Configuration import ObservationConfiguration
 from GammaPipeCommon.Configuration import RunConfiguration
-#import CTA3GHextractor_wrapper
+import CTA3GHextractor_wrapper
 
 class CToolsGammaPipe:
 
@@ -270,7 +270,8 @@ class CToolsGammaPipe:
 			#3GHextractor
 			# 3GH Extractor code
 			if self.runconf.HypothesisGenerator3GH and cubefile_name:
-				#self.analysisfilename = GH3extractor.extract_source(cubefile_name)
+				self.analysisfilename = CTA3GHextractor_wrapper.extract_source(cubefile_name)
+				print(self.analysisfilename)
 				#cv2.waitKey(0)
 				print('HypothesisGeneratorEG3')
 			
@@ -296,7 +297,7 @@ class CToolsGammaPipe:
 				print(logL)
 			
 			if self.runconf.HypothesisGenerator3GH:
-				#GH3extractor.print_graphs(self.simfilename, result_name, self.analysisfilename)
+				CTA3GHextractor_wrapper.print_graphs(self.simfilename, result_name, self.analysisfilename)
 				#cv2.destroyAllWindows()
 				print('HypothesisGeneratorEG3')
 
