@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from astropy.coordinates import SkyCoord
 import sys
 import CTA3GHextractor
-relative_path = '../CTA3GHextractor'
+relative_path = '../CTA3GHextractor/'
 sys.path.insert(0, relative_path)
 from classes import Extractor
 

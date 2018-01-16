@@ -1,6 +1,6 @@
 <observation name="GPS" id="3" instrument="CTA">
 <parameter name="Pointing" ra="83.6331" dec="22.0145"/>
-<parameter name="GoodTimeIntervals" tmin="58130.0" tmax="58130.083333"/>
+<parameter name="GoodTimeIntervals" tmin="58130.0" tmax="58130.5"/>
 <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" rad="10.0"/>
 <parameter name="Deadtime" deadc="1"/>
 <parameter name="Calibration" database="prod2" response="South_0.5h"/>
