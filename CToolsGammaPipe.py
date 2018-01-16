@@ -70,6 +70,7 @@ class CToolsGammaPipe:
 		#if in_pnttype == 'galactic' :
 		#	pntdir.radec_deg(self.in_l, self.in_b)
 
+
 		pntdir.radec_deg(self.obsconf.obs_ra, self.obsconf.obs_dec)
 
 		obs1 = obsutils.set_obs(pntdir, self.obsconf.obs_tstart, self.obsconf.obs_duration, 1.0, \
