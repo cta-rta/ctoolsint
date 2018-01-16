@@ -24,7 +24,7 @@ import ctools
 import obsutils
 from GammaPipeCommon.Configuration import ObservationConfiguration
 from GammaPipeCommon.Configuration import RunConfiguration
-import CTA3GHextractor_wrapper
+#import CTA3GHextractor_wrapper
 
 class CToolsGammaPipe:
 

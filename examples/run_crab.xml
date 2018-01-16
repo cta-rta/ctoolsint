@@ -1,6 +1,6 @@
 <run id="1">
   <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" skypositiontype="" ringrad="" AlertContour="" />
-  <parameter name="TimeIntervals" tmin="55197.6735669444" tmax="55197.8835669444"  />
+  <parameter name="TimeIntervals" tmin="55197.0007660185" tmax="55197.0224326852"  />
   <parameter mjdreff="0.5" mjdrefi="51544" name="TimeReference" timeref="LOCAL" timesys="TT" timeunit="s" />
   <parameter name="Energy"  emin="0.1"  emax="100" energyBinID="" />
   <parameter name="WorkInMemory" value="0"  />
