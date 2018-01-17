@@ -18,7 +18,7 @@
 #
 # ==========================================================================
 
-import CTA3GHextractor_wrapper
+#import CTA3GHextractor_wrapper
 import os
 import gammalib
 import ctools
