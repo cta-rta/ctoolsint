@@ -51,9 +51,14 @@ class CToolsGammaPipe:
 		if self.obsfilename:
 			self.obs = self.open_observation(self.obsfilename)
 					
-		print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
-		print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))
-		print('run   roi ra ' + str(self.runconf.roi_ra) + ' dec ' + str(self.runconf.roi_dec) + ' frame ' + str(self.runconf.roi_frame))
+		if self.runconf.skyframref == 'fk5':
+			print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
+			print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))
+			print('run   roi ra ' + str(self.runconf.roi_ra) + ' dec ' + str(self.runconf.roi_dec) + ' frame ' + str(self.runconf.roi_frame))
+		if self.runconf.skyframe == 'gal':
+			print('pointing l  ' + str(self.obsconf.point_l) + ' b ' + str(self.obsconf.point_b) + ' frame ' + str(self.obsconf.point_frame))
+			print('point roi l ' + str(self.obsconf.roi_l) + ' b ' + str(self.obsconf.roi_b) + ' frame ' + str(self.obsconf.roi_frame))
+			print('run   roi l ' + str(self.runconf.roi_l) + ' b ' + str(self.runconf.roi_b) + ' frame ' + str(self.runconf.roi_frame))
 			
 		return
 
@@ -148,6 +153,11 @@ class CToolsGammaPipe:
 				sim['seed']    = seed
 				sim.run()
 				
+				
+		#if self.runfilename is not present	
+		#   import into DB if any
+		#	exit(0)	
+				
 		############ Get events from DB
 		
 		if not self.simfilename and not self.eventfilename:
@@ -155,18 +165,21 @@ class CToolsGammaPipe:
 			print('# Load event list from DB')
 			
 			#write selected_events_name
-			#tstart_tt
-			#tstop_tt
-			#observationid
-			#path_base_fits = events_name
-			#tref_mjd
-			#obs_ra
-			#obs_dec
-			#emin
-			#emax
-			#fov
+			tstart_tt = self.runconf.tmin
+			tstop_tt = self.runconf.tmax
+			observationid = self.obsconf.id
+			#path_base_fits = events_name ###DA RISOLVERE
+			tref_mjd = self.runconf.timeref
+			if self.runconf.roi_frame == 'fk5':
+				obs_ra = self.runconf.roi_ra
+				obs_dec = self.runconf.roi_dec
+			else:
+				#throw exception
+			emin = self.runconf.emin
+ 			emax = self.runconf.emax
+			fov = self.obsconf.roi_fov
 			#instrumentname
-			#write_fits(tstart_tt, tstop_tt, observationid, path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
+			events_name = write_fits(tstart_tt, tstop_tt, observationid, path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
 			
 			if self.runconf.WorkInMemory == 2:
 				print('# Load event list from disk')
@@ -322,7 +335,7 @@ class CToolsGammaPipe:
 				like['irf']      = self.obsconf.irf
 				like['statistic'] = 'DEFAULT'
 				like.execute()
-				logL = like.opt().value()
+				logL = like.opt().value()	
 				print(logL)
 			
 			if self.runconf.HypothesisGenerator3GH:

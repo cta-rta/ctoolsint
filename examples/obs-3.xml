@@ -1,6 +1,6 @@
 <observation name="Crab" id="3" instrument="CTA-SOUTH">
   <parameter name="Pointing" ra="83.6331" dec="22.0145" frame="fk5" unit="deg"/>
-  <parameter name="GoodTimeIntervals" tmin="58130.0" tmax="58130.1" timeunit="day" timesys="mjd"/>
+  <parameter name="GoodTimeIntervals" tmin="58130.0" tmax="58131.0" timeunit="day" timesys="mjd"/>
   <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" rad="10.0" frame="fk5" unit="deg"/>
   <parameter name="Deadtime" deadc="1"/>
   <parameter name="Calibration" database="prod2" response="South_0.5h"/>
