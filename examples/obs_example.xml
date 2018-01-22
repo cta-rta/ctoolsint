@@ -1,9 +1,0 @@
-<observation id="1" instrument="CTA" name="GPS">
-  <parameter dec="20.0" name="Pointing" ra="100.0" />
-  <parameter name="GoodTimeIntervals" tmax="1000.0" tmin="0.0" />
-  <parameter mjdreff="0.5" mjdrefi="51544" name="TimeReference" timeref="LOCAL" timesys="TT" timeunit="s" />
-  <parameter dec="20.0" name="RegionOfInterest" ra="100.0" rad="None" />
-  <parameter deadc="1" name="Deadtime" />
-  <parameter database="None" name="Calibration" response="None" />
-  <parameter emax="None" emin="None" name="Energy" />
-</observation>

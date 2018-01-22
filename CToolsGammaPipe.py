@@ -18,13 +18,15 @@
 #
 # ==========================================================================
 
-#import CTA3GHextractor_wrapper
 import os
 import gammalib
 import ctools
 import obsutils
 from GammaPipeCommon.Configuration import ObservationConfiguration
 from GammaPipeCommon.Configuration import RunConfiguration
+from CTAGammaPipeCommon.create_fits import write_fits
+from GammaPipeCommon.utility import Utility
+
 #import CTA3GHextractor_wrapper
 
 class CToolsGammaPipe:
@@ -39,13 +41,19 @@ class CToolsGammaPipe:
 		self.runconffilename = runconffilename
 		self.eventfilename = eventfilename
 		
+		
+		
+		# Setup run
+		if self.runconffilename:
+			self.runconf = RunConfiguration(self.runconffilename)
+		
 		# Setup observations
 		if self.obsfilename:
 			self.obs = self.open_observation(self.obsfilename)
 					
-		# Setup run
-		if self.runconffilename:
-			self.runconf = RunConfiguration(self.runconffilename)
+		print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
+		print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))
+		print('run   roi ra ' + str(self.runconf.roi_ra) + ' dec ' + str(self.runconf.roi_dec) + ' frame ' + str(self.runconf.roi_frame))
 			
 		return
 
@@ -55,15 +63,15 @@ class CToolsGammaPipe:
 
 		obs = gammalib.GObservations()
 		
-		self.obsconf = ObservationConfiguration(obsfilename)
-		print(self.obsconf.obs_caldb)
+		self.obsconf = ObservationConfiguration(obsfilename, self.runconf.timesys, self.runconf.timeunit, self.runconf.skyframeref, self.runconf.skyframeunitref)
+		print(self.obsconf.caldb)
 
 		pntdir = gammalib.GSkyDir()
 
-		#in_pnttype = info_dict['in_pnttype']
+		in_pnttype = self.obsconf.point_frame
 
-		#if in_pnttype == 'celestial' :
-			#pntdir.radec_deg(self.obs_ra, self.obs_dec)
+		if in_pnttype == 'fk5' :
+			pntdir.radec_deg(self.obsconf.point_ra, self.obsconf.point_dec)
 
 		#if in_pnttype == 'equatorial' :
 			#pntdir.radec_deg(self.obs_ra, self.obs_dec)
@@ -72,11 +80,17 @@ class CToolsGammaPipe:
 		#	pntdir.radec_deg(self.in_l, self.in_b)
 
 
-		pntdir.radec_deg(self.obsconf.obs_ra, self.obsconf.obs_dec)
-
-		obs1 = obsutils.set_obs(pntdir, self.obsconf.obs_tstart, self.obsconf.obs_duration, 1.0, \
-			self.obsconf.obs_emin, self.obsconf.obs_emax, self.obsconf.obs_fov, \
-			self.obsconf.obs_irf, self.obsconf.obs_caldb, self.obsconf.in_obsid)
+		#pntdir.radec_deg(self.obsconf.obs_point_ra, self.obsconf.obs_point_dec)
+		
+		tstart = self.obsconf.tstart - self.runconf.timeref
+		if self.runconf.timeref_timesys == 'mjd':
+			tstart = tstart * 86400.
+		
+		print("TSTART " + str(tstart))
+			
+		obs1 = obsutils.set_obs(pntdir, tstart, self.obsconf.duration, 1.0, \
+			self.obsconf.emin, self.obsconf.emax, self.obsconf.roi_fov, \
+			self.obsconf.irf, self.obsconf.caldb, self.obsconf.id)
 
 		obs.append(obs1)
 
@@ -139,7 +153,20 @@ class CToolsGammaPipe:
 		if not self.simfilename and not self.eventfilename:
 			#load from DB
 			print('# Load event list from DB')
+			
 			#write selected_events_name
+			#tstart_tt
+			#tstop_tt
+			#observationid
+			#path_base_fits = events_name
+			#tref_mjd
+			#obs_ra
+			#obs_dec
+			#emin
+			#emax
+			#fov
+			#instrumentname
+			#write_fits(tstart_tt, tstop_tt, observationid, path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
 			
 			if self.runconf.WorkInMemory == 2:
 				print('# Load event list from disk')
@@ -168,7 +195,7 @@ class CToolsGammaPipe:
 			
 		select['ra']     = self.runconf.roi_ra
 		select['dec']    = self.runconf.roi_dec
-		select['rad']    = self.obsconf.obs_fov
+		select['rad']    = self.obsconf.roi_fov
 		select['tmin']   = 'MJD ' + str(self.runconf.tmin)
 		#select['tmin']   = 'INDEF'
 		#select['tmin'] = 0.0
@@ -266,7 +293,7 @@ class CToolsGammaPipe:
 
 			#print(obs)
 			#print(obs[0])
-			print(str(self.obsconf.obs_caldb))
+			print(str(self.obsconf.caldb))
 			
 			#hypothesis builders
 			#3GHextractor
@@ -291,8 +318,8 @@ class CToolsGammaPipe:
 				
 				like['inmodel']  = self.analysisfilename
 				like['outmodel']  = result_name
-				like['caldb'] = str(self.obsconf.obs_caldb)
-				like['irf']      = self.obsconf.obs_irf
+				like['caldb'] = str(self.obsconf.caldb)
+				like['irf']      = self.obsconf.irf
 				like['statistic'] = 'DEFAULT'
 				like.execute()
 				logL = like.opt().value()
