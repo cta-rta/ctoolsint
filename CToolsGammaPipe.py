@@ -79,7 +79,7 @@ class CToolsGammaPipe:
 		pntdir = gammalib.GSkyDir()
 
 		in_pnttype = self.obsconf.point_frame
-
+		print(in_pnttype)
 		if in_pnttype == 'fk5' :
 			pntdir.radec_deg(self.obsconf.point_ra, self.obsconf.point_dec)
 
@@ -101,6 +101,8 @@ class CToolsGammaPipe:
 		obs1 = obsutils.set_obs(pntdir, tstart, self.obsconf.duration, 1.0, \
 			self.obsconf.emin, self.obsconf.emax, self.obsconf.roi_fov, \
 			self.obsconf.irf, self.obsconf.caldb, self.obsconf.id)
+
+		print(obs1)
 
 		obs.append(obs1)
 
@@ -180,6 +182,7 @@ class CToolsGammaPipe:
 			#tstart_tt = self.runconf.tmin
 			#tstop_tt = self.runconf.tmax
 			observationid = self.obsconf.id
+			datarepositoryid = self.runconf.datarepositoryid
 			print("tstart"+str(tstart_tt))
 			print("tstop"+str(tstart_tt))
 			print(self.runconf.timeref_timesys)
@@ -199,8 +202,8 @@ class CToolsGammaPipe:
 			emax = self.runconf.emax
 			fov = self.obsconf.roi_fov
 			instrumentname = self.obsconf.instrument
-			events_name = write_fits(tstart_tt, tstop_tt, observationid, path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
-
+			events_name = write_fits(tstart_tt,tstop_tt,observationid,datarepositoryid,path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
+			print("fitsname"+events_name)
 			if self.runconf.WorkInMemory == 2:
 				print('# Load event list from disk')
 				#Load events from fits file on memory
@@ -254,6 +257,9 @@ class CToolsGammaPipe:
 		#print(self.runconf.emin)
 		#print(self.runconf.emax)
 		#print(select.obs()[0])
+		print("select --")
+		print(select)
+		print("select --")
 
 		if self.runconf.WorkInMemory == 2:
 			print('# Load event list from disk')
@@ -269,7 +275,9 @@ class CToolsGammaPipe:
 		print('Event list generated ----------------------')
 		if self.runconf.WorkInMemory == 0:
 			print(self.obs)
+			print("obs --")
 			print(self.obs[0])
+			print("obs 0 --")
 			localobs = self.obs
 
 		if self.runconf.WorkInMemory == 1:
@@ -278,7 +286,11 @@ class CToolsGammaPipe:
 			localobs = select.obs()
 
 		for run in localobs:
-			print('run ---')
+
+			print('run ---'+selected_events_name)
+
+			print(run)
+
 			# Create container with a single observation
 			container = gammalib.GObservations()
 			container.append(run)

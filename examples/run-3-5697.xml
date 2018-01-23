@@ -1,8 +1,9 @@
 <run id="5867">
 	<parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" skypositiontype="1" radius="10.0" AlertContour="None" frame="fk5" unit="deg" />
-	<parameter name="TimeIntervals" tmin="53005.672800925924" tmax="53005.684375" timeunit="day" timesys="mjd" />
-	<parameter name="ScienceToolReference" timestart="55197.000766018518519" timeunit="day" timesys="mjd" timeref="LOCAL" skyframe="fk5" skyframeunit='deg' />
+	<parameter name="TimeIntervals" tmin="57988.5513657" tmax="57988.5629398" timeunit="day" timesys="mjd" />
+	<parameter name="ScienceToolReference" timestart="51544.5" timeunit="day" timesys="mjd" timeref="LOCAL" skyframe="fk5" skyframeunit='deg' />
 	<parameter name="Energy" emin="0.1" emax="10000.0" energyBinID="" />
+	<parameter name="DataInfo" datarepositoryid="1"/>
 	<parameter name="WorkInMemory" value="0" />
 	<parameter name="MakeCtsMap" value="1" />
         <parameter name="CountsMap" enumbins="1" nxpix="200" nypix="200" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="True" />
