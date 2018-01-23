@@ -331,6 +331,7 @@ class CToolsGammaPipe:
 					bin.obs()[0].id(cubefile_name)
 					bin.obs()[0].eventfile(cubefile_name)
 					SkyImage.display(cubefile_name, "sky1.png")
+					#SkyImage.dispalywithds9_cts1(cubefile_name, "sky2", 10)
 
 				#make binned map on memory
 				if self.runconf.WorkInMemory == 1:
