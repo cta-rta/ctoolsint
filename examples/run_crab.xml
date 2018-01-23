@@ -6,7 +6,7 @@
   <parameter name="DataInfo" datarepositoryid="1"/>
   <parameter name="WorkInMemory" value="0"  />
   <parameter name="MakeCtsMap" value="1" />
-  <parameter name="CountsMap" enumbins="10" nxpix="200" nypix="200" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="True" />
+  <parameter name="CountsMap" enumbins="1" nxpix="200" nypix="200" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="True" />
   <parameter name="HypothesisGenerator3GH" value="0" />
   <parameter name="CtsMapToPng" value="0" />
 </run>

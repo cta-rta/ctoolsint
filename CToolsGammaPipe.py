@@ -27,6 +27,7 @@ from GammaPipeCommon.Configuration import ObservationConfiguration
 from GammaPipeCommon.Configuration import RunConfiguration
 from CTAGammaPipeCommon.create_fits import write_fits
 from GammaPipeCommon.utility import Utility
+from GammaPipeCommon.SkyImage import SkyImage
 from conf import *
 
 #import CTA3GHextractor_wrapper
@@ -248,6 +249,7 @@ class CToolsGammaPipe:
 
 		if self.runconf.WorkInMemory == 0:
 			select.execute()
+			
 
 		#print(self.runconf.roi_ra)
 		#print(self.runconf.roi_dec)
@@ -328,6 +330,7 @@ class CToolsGammaPipe:
 					# Set observation ID if make binned map on disk
 					bin.obs()[0].id(cubefile_name)
 					bin.obs()[0].eventfile(cubefile_name)
+					SkyImage.display(cubefile_name, "sky1.png")
 
 				#make binned map on memory
 				if self.runconf.WorkInMemory == 1:
