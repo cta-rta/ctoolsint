@@ -35,7 +35,7 @@ def pipeline_binned():
 	usage = 'Pipe1.py [-observation obsfilename] [-simmodel simmodelfilename] [-anamodel analysismodelfilename] [-confpipe configuration pipe][-seed seed]'
 
 	# Set default options
-	options = [{'option': '-observation', 'value': 'examples/obs_crab.xml'}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': 'examples/crab.xml'}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}]
+	options = [{'option': '-observation', 'value': 'examples/obs_crab.xml'}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': ''}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}]
 
 	# Get arguments and options from command line arguments
 	args, options = cscripts.ioutils.get_args_options(options, usage)

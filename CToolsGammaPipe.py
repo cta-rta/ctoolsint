@@ -330,7 +330,8 @@ class CToolsGammaPipe:
 					# Set observation ID if make binned map on disk
 					bin.obs()[0].id(cubefile_name)
 					bin.obs()[0].eventfile(cubefile_name)
-					SkyImage.display(cubefile_name, "sky1.png")
+					title = 'OBS ' + str(self.obsconf.id) + ' / MJD ' + str(self.runconf.tmin) + ' - ' + 'MJD ' + str(self.runconf.tmax)
+					SkyImage.display(cubefile_name, "sky1.png", 3, title)
 					#SkyImage.dispalywithds9_cts1(cubefile_name, "sky2", 10)
 
 				#make binned map on memory
