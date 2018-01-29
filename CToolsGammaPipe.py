@@ -181,10 +181,11 @@ class CToolsGammaPipe:
 				tstart_tt = Utility.convert_mjd_to_tt(self.runconf.tmin)
 				tstop_tt = Utility.convert_mjd_to_tt(self.runconf.tmax)
 
+			datarepository_dictionary = get_data_repository()
+			datarepositoryid = datarepository_dictionary['datarepositoryid']
 			#tstart_tt = self.runconf.tmin
 			#tstop_tt = self.runconf.tmax
 			observationid = self.obsconf.id
-			datarepositoryid = self.runconf.datarepositoryid
 			print("tstart"+str(tstart_tt))
 			print("tstop"+str(tstart_tt))
 			print(self.runconf.timeref_timesys)
@@ -250,7 +251,7 @@ class CToolsGammaPipe:
 
 		if self.runconf.WorkInMemory == 0:
 			select.execute()
-			
+
 
 		#print(self.runconf.roi_ra)
 		#print(self.runconf.roi_dec)
