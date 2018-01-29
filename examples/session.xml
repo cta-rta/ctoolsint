@@ -1,0 +1,6 @@
+<session id='10'>
+	<parameter name="postanalysis" value="copyfiles" />
+	<parameter name="DirectoryList"  results="/ANALYSIS3/CTA-SOUTH/DREVT_CTA_O3/ctools-lc_LC10s/T430579548_430579558/" />
+  	<parameter name="WebImage" value="1" dir="/ANALYSIS3/web/" />
+	<parameter name="TimeLine" value="1" dir="/ANALYSIS3/timeline/" />
+</session>

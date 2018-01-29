@@ -19,12 +19,52 @@
 # ==========================================================================
 
 import os
+import shutil
 import gammalib
 import ctools
 import cscripts
 import CToolsGammaPipe
+from PipeConfiguration import CToolsRunConfiguration
+from PipeConfiguration import PostAnalysisCopyFilesConfiguration
 
-
+class PostAnalysisCopyFiles:
+	def __init__(self, sessionconf):
+		self.sessionconf = sessionconf
+		return
+		
+	def execute(self):
+		print('copy files')
+		if self.sessionconf.WebImage == 1:
+			#copy sky1.png
+			os.system('mkdir -p ' + self.sessionconf.WebImageDir)
+			for entry in os.scandir(self.sessionconf.resdir):
+				#print(entry.name)
+				if entry.name.endswith('_sky1.png'):
+					#print(entry.name)		
+					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/sky1.png')
+				if entry.name.endswith('_cube.fits'):
+					#print(entry.name)		
+					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/cube.fits')
+			
+		if self.sessionconf.TimeLine == 1:
+			os.system('mkdir -p ' + self.sessionconf.TimeLineDir)
+			for entry in os.scandir(self.sessionconf.resdir):
+				#print(entry.name)
+				if  entry.name.endswith('_sky1.png'):
+					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.TimeLineDir)
+		
+		return
+		
+		
+		
+def executePostAnalysis(filename):
+	# Setup postanalysis
+	if filename:
+		sessionconf = PostAnalysisCopyFilesConfiguration(filename)
+	
+	if sessionconf.postanalysis == "copyfiles":
+		copyfiles = PostAnalysisCopyFiles(sessionconf)
+		copyfiles.execute()
 
 def pipeline_binned():
 	print('Run binned pipeline')
@@ -32,10 +72,10 @@ def pipeline_binned():
 	Run binned pipeline
 	"""
 	# Set usage string
-	usage = 'Pipe1.py [-observation obsfilename] [-simmodel simmodelfilename] [-anamodel analysismodelfilename] [-confpipe configuration pipe][-seed seed]'
+	usage = 'ExecuteCTools.py [-observation obsfilename] [-simmodel simmodelfilename] [-anamodel analysismodelfilename] [-confpipe configuration pipe][-seed seed]'
 
 	# Set default options
-	options = [{'option': '-observation', 'value': 'examples/obs_crab.xml'}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': ''}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}]
+	options = [{'option': '-observation', 'value': ''}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': ''}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}, {'option': '-postanalysis', 'value': ''},]
 
 	# Get arguments and options from command line arguments
 	args, options = cscripts.ioutils.get_args_options(options, usage)
@@ -47,20 +87,29 @@ def pipeline_binned():
 	runconffilename = options[3]['value']
 	eventfilename = options[4]['value']
 	in_seed = int(options[5]['value'])
+	postanalysis = options[6]['value']
 
-	print(obsfilename)
-	print(simfilename)
-	print(analysisfilename)
-	print(runconffilename)
-	print(eventfilename)
+	print('obsfilename: ' + obsfilename)
+	print('simfilename: ' + simfilename)
+	print('analysisfilename: ' + analysisfilename)
+	print('runconffilename: ' + runconffilename)
+	print('eventfilename: ' + eventfilename)
+	print('postanalysis: ' + postanalysis)
 
-	gp = CToolsGammaPipe.CToolsGammaPipe()
+	if not postanalysis:
+		gp = CToolsGammaPipe.CToolsGammaPipe()
 	
-	gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
+		gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
 
-	# Run analysis pipeline
-	gp.run_pipeline(seed=in_seed)
-
+		# Run analysis pipeline
+		gp.run_pipeline(seed=in_seed)
+		
+		
+		
+	if postanalysis:
+		
+		executePostAnalysis(postanalysis)
+		
 	# Return
 	return
 

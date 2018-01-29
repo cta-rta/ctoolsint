@@ -19,12 +19,13 @@
 # ==========================================================================
 
 import os
+import shutil
 import gammalib
 import ctools
 from lxml import etree
 import obsutils
 from GammaPipeCommon.Configuration import ObservationConfiguration
-from GammaPipeCommon.Configuration import RunConfiguration
+from PipeConfiguration import CToolsRunConfiguration
 from CTAGammaPipeCommon.create_fits import write_fits
 from GammaPipeCommon.utility import Utility
 from GammaPipeCommon.SkyImage import SkyImage
@@ -46,7 +47,7 @@ class CToolsGammaPipe:
 
 		# Setup run
 		if self.runconffilename:
-			self.runconf = RunConfiguration(self.runconffilename)
+			self.runconf = CToolsRunConfiguration(self.runconffilename)
 
 
 		#print all attribute of a class
@@ -330,10 +331,16 @@ class CToolsGammaPipe:
 					# Set observation ID if make binned map on disk
 					bin.obs()[0].id(cubefile_name)
 					bin.obs()[0].eventfile(cubefile_name)
+					os.system('mkdir -p ' + self.runconf.resdir)
+					shutil.copy('./cube.fits', self.runconf.resdir + '/'+self.runconf.runprefix + '_cube.fits')
+					
 					if self.runconf.CtsMapToPng == 1:
 						title = 'OBS ' + str(self.obsconf.id) + ' / MJD ' + str(self.runconf.tmin) + ' - ' + 'MJD ' + str(self.runconf.tmax)
 						SkyImage.display(cubefile_name, "sky1.png", 3, title)
 						#SkyImage.dispalywithds9_cts1(cubefile_name, "sky2", 10)
+						#copy results
+						os.system('mkdir -p ' + self.runconf.resdir)
+						shutil.copy('./sky1.png', self.runconf.resdir + '/'+self.runconf.runprefix + '_sky1.png')
 
 				#make binned map on memory
 				if self.runconf.WorkInMemory == 1:
@@ -356,6 +363,7 @@ class CToolsGammaPipe:
 				print('HypothesisGeneratorEG3')
 
 			#eseguire MLE
+			print('analysisfilename: ' + self.analysisfilename)
 			if self.analysisfilename:
 				print('MLE')
 				# Perform maximum likelihood fitting
@@ -384,6 +392,9 @@ class CToolsGammaPipe:
 				f = open(result_name, 'w')
 				f.write(etree.tostring(tree,encoding="unicode",pretty_print=True))
 				f.close()
+				
+				os.system('mkdir -p ' + self.runconf.resdir)
+				shutil.copy('./results.xml', self.runconf.resdir + '/'+self.runconf.runprefix + '_results.xml')
 
 			if self.runconf.HypothesisGenerator3GH:
 				CTA3GHextractor_wrapper.print_graphs(self.simfilename, result_name, self.analysisfilename)
