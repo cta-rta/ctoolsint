@@ -49,7 +49,6 @@ class CToolsGammaPipe:
 		if self.runconffilename:
 			self.runconf = CToolsRunConfiguration(self.runconffilename)
 
-
 		#print all attribute of a class
 		#attrs = vars(self.runconf)
 		#print(attrs)
@@ -58,14 +57,17 @@ class CToolsGammaPipe:
 		if self.obsfilename:
 			self.obs = self.open_observation(self.obsfilename)
 
-		if self.runconf.skyframeref == 'fk5':
-			print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
-			print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))
-			print('run   roi ra ' + str(self.runconf.roi_ra) + ' dec ' + str(self.runconf.roi_dec) + ' frame ' + str(self.runconf.roi_frame))
-		if self.runconf.skyframeref == 'galactic':
-			print('pointing l  ' + str(self.obsconf.point_l) + ' b ' + str(self.obsconf.point_b) + ' frame ' + str(self.obsconf.point_frame))
-			print('point roi l ' + str(self.obsconf.roi_l) + ' b ' + str(self.obsconf.roi_b) + ' frame ' + str(self.obsconf.roi_frame))
-			print('run   roi l ' + str(self.runconf.roi_l) + ' b ' + str(self.runconf.roi_b) + ' frame ' + str(self.runconf.roi_frame))
+		if self.runconffilename:
+			if self.runconf.skyframeref == 'fk5':
+				print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
+				print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))
+				print('run   roi ra ' + str(self.runconf.roi_ra) + ' dec ' + str(self.runconf.roi_dec) + ' frame ' + str(self.runconf.roi_frame))
+			if self.runconf.skyframeref == 'galactic':
+				print('pointing l  ' + str(self.obsconf.point_l) + ' b ' + str(self.obsconf.point_b) + ' frame ' + str(self.obsconf.point_frame))
+				print('point roi l ' + str(self.obsconf.roi_l) + ' b ' + str(self.obsconf.roi_b) + ' frame ' + str(self.obsconf.roi_frame))
+				print('run   roi l ' + str(self.runconf.roi_l) + ' b ' + str(self.runconf.roi_b) + ' frame ' + str(self.runconf.roi_frame))
+
+
 
 		return
 
@@ -334,7 +336,7 @@ class CToolsGammaPipe:
 					bin.obs()[0].eventfile(cubefile_name)
 					os.system('mkdir -p ' + self.runconf.resdir)
 					shutil.copy('./cube.fits', self.runconf.resdir + '/'+self.runconf.runprefix + '_cube.fits')
-					
+
 					if self.runconf.CtsMapToPng == 1:
 						title = 'OBS ' + str(self.obsconf.id) + ' / MJD ' + str(self.runconf.tmin) + ' - ' + 'MJD ' + str(self.runconf.tmax)
 						SkyImage.display(cubefile_name, "sky1.png", 3, title)
@@ -389,13 +391,15 @@ class CToolsGammaPipe:
 				contentnav = tree.find(".//source[@type='PointSource']")
 				#contentdiv = contentnav.getparent()
 				contentnav.set("ts",str(logL))
+				contentnav.set("runid",str(self.runconf.runid))
 				#print(etree.tostring(tree,encoding="unicode",pretty_print=True))
 				f = open(result_name, 'w')
 				f.write(etree.tostring(tree,encoding="unicode",pretty_print=True))
 				f.close()
-				
+
 				os.system('mkdir -p ' + self.runconf.resdir)
 				shutil.copy('./results.xml', self.runconf.resdir + '/'+self.runconf.runprefix + '_results.xml')
+
 
 			if self.runconf.HypothesisGenerator3GH:
 				CTA3GHextractor_wrapper.print_graphs(self.simfilename, result_name, self.analysisfilename)

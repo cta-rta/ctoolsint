@@ -20,5 +20,5 @@ python ExecuteCTools.py -simmodel examples/target-3.xml -observation examples/ob
 
 #Post analysis
 python ExecuteCTools.py -postanalysis examples/session.xml
-
+python ExecuteCTools.py -import merged_results.xml
 
