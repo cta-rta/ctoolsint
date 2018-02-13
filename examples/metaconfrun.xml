@@ -1,0 +1,12 @@
+<run id="#@runid@#">
+	<parameter name="RegionOfInterest" ra="#@ra@#" dec="#@dec@#" skypositiontype="#@skypositiontype@#" radius="#@radius@#" AlertContour="#@contour_name@#" frame="#@skyrefname@#" unit="#@skyrefunit@#" />
+	<parameter name="TimeIntervals" tmin="#@tstart@#" tmax="#@tstop@#" timeunit="#@timerefunit@#" timesys="#@timerefname@#" />
+	<parameter name="ScienceToolReference" timestart="51544.5" timeunit="day" timesys="mjd" timeref="LOCAL" skyframe="fk5" skyframeunit="deg" />
+	<parameter name="Energy" emin="#@emin@#" emax="#@emax@#" energyBinID="" />
+	<parameter name="DirectoryList" run="#@diroutputrun@#" results="#@diroutputresults@#" runprefix="#@runprefix@#" />
+	<parameter name="WorkInMemory" value="0" />
+	<parameter name="MakeCtsMap" value="1" />
+	<parameter name="CountsMap" enumbins="1" nxpix="200" nypix="200" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="no" />
+	<parameter name="HypothesisGenerator3GH" value="0" />
+  	<parameter name="CtsMapToPng" value="1" />
+</run>

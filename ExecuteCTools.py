@@ -60,7 +60,7 @@ class PostAnalysisCopyFiles:
 
 def execute_import(results_xml):
 
-	ImportResults.import_results(results_xml,0)
+	ImportResults.import_results(results_xml,1)
 
 
 def executePostAnalysis(filename):

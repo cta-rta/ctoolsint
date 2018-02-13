@@ -30,6 +30,7 @@ from CTAGammaPipeCommon.create_fits import write_fits
 from GammaPipeCommon.utility import Utility
 from GammaPipeCommon.SkyImage import SkyImage
 from conf import *
+from math import ceil
 
 #import CTA3GHextractor_wrapper
 
@@ -198,8 +199,8 @@ class CToolsGammaPipe:
 			tref_mjd = self.runconf.timeref
 
 			if self.runconf.roi_frame == 'fk5':
-				obs_ra = self.runconf.roi_ra
-				obs_dec = self.runconf.roi_dec
+				obs_ra = self.obsconf.roi_ra
+				obs_dec = self.obsconf.roi_dec
 			else:
 				exit(10)
 
@@ -207,7 +208,7 @@ class CToolsGammaPipe:
 			emax = self.runconf.emax
 			fov = self.obsconf.roi_fov
 			instrumentname = self.obsconf.instrument
-			events_name = write_fits(tstart_tt,tstop_tt,observationid,datarepositoryid,path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, fov, instrumentname)
+			events_name = write_fits(tstart_tt,tstop_tt,observationid,datarepositoryid,path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, 180, instrumentname)
 			print("fitsname"+events_name)
 			if self.runconf.WorkInMemory == 2:
 				print('# Load event list from disk')
@@ -236,7 +237,7 @@ class CToolsGammaPipe:
 
 		select['ra']     = self.runconf.roi_ra
 		select['dec']    = self.runconf.roi_dec
-		select['rad']    = self.obsconf.roi_fov
+		select['rad']    = self.runconf.roi_ringrad
 		select['tmin']   = 'MJD ' + str(self.runconf.tmin)
 		#select['tmin']   = 'INDEF'
 		#select['tmin'] = 0.0
@@ -321,13 +322,16 @@ class CToolsGammaPipe:
 				bin['emin']     = self.runconf.emin
 				bin['emax']     = self.runconf.emax
 				bin['enumbins'] = self.runconf.cts_enumbins
-				bin['nxpix']    = self.runconf.cts_nxpix
-				bin['nypix']    = self.runconf.cts_nypix
+				bin['nxpix']    = ceil(self.runconf.roi_ringrad / self.runconf.cts_binsz)
+				bin['nypix']    =  ceil(self.runconf.roi_ringrad / self.runconf.cts_binsz)
 				bin['binsz']    = self.runconf.cts_binsz
 				bin['coordsys'] = self.runconf.cts_coordsys
 				bin['usepnt']   = self.runconf.cts_usepnt # Use pointing for map centre
 				bin['proj']     = self.runconf.cts_proj
-
+				bin['xref'] = self.runconf.roi_ra
+				bin['yref'] = self.runconf.roi_dec
+				print("-- bin")
+				print(bin)
 				#make binned map on disk
 				if self.runconf.WorkInMemory == 0:
 					bin.execute()

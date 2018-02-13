@@ -26,7 +26,7 @@ from GammaPipeCommon.Configuration import PostAnalysisConfiguration
 class CToolsRunConfiguration(RunConfiguration):
 	def __init__(self, filename):
 		RunConfiguration.__init__(self,filename)
-		
+
 		#pipe configuration
 		self.WorkInMemory = int(self.info_dict['run']['WorkInMemory']['value'])
 
@@ -40,11 +40,16 @@ class CToolsRunConfiguration(RunConfiguration):
 		self.cts_proj = self.info_dict['run']['CountsMap']['proj']
 		self.cts_coordsys = self.info_dict['run']['CountsMap']['coordsys']
 		self.cts_enumbins = int(self.info_dict['run']['CountsMap']['enumbins'])
-		self.cts_nxpix = int(self.info_dict['run']['CountsMap']['nxpix'])
-		self.cts_nypix = int(self.info_dict['run']['CountsMap']['nypix'])
+		#self.cts_nxpix = int(self.info_dict['run']['CountsMap']['nxpix'])
+		#self.cts_nypix = int(self.info_dict['run']['CountsMap']['nypix'])
 		self.cts_binsz = float(self.info_dict['run']['CountsMap']['binsz'])
-		self.cts_usepnt = bool(self.info_dict['run']['CountsMap']['usepnt'])
-		
+
+		point_to_center_of_observation = self.info_dict['run']['CountsMap']['usepnt']
+		if(point_to_center_of_observation == "yes"):
+			self.cts_usepnt = True
+		else:
+			self.cts_usepnt = False
+
 class PostAnalysisCopyFilesConfiguration(PostAnalysisConfiguration):
 	def __init__(self, sessionconffilename):
 		PostAnalysisConfiguration.__init__(self,sessionconffilename)
