@@ -137,9 +137,6 @@ class ImportResults():
                         if analysissessiontype_observationid is None:
                             analysissessiontype_observationid = 'NULL'
 
-                        cursor.close()
-                        conn.close()
-
                         x_alert = 8
                         x_association = 4
 
@@ -149,7 +146,7 @@ class ImportResults():
                         print(output)
 
             if(check_alert == 1):
-                
+
                 #TODO gestione allerte doppie -> passare anche l'id della sessione per controllare solo quelle dove sono andato ad inserire
                 cmd = "ruby $PIPELINE/GammaPipeCommon/alert/check_for_duplicate_alert.rb "+str(analysissessiontype_observationid)+" "+str(analysissessiontype_notice_observationid)
 

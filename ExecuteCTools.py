@@ -26,35 +26,9 @@ import cscripts
 import CToolsGammaPipe
 from PipeConfiguration import CToolsRunConfiguration
 from PipeConfiguration import PostAnalysisCopyFilesConfiguration
+from PostAnalysis import *
 from ImportResults import *
 
-class PostAnalysisCopyFiles:
-	def __init__(self, sessionconf):
-		self.sessionconf = sessionconf
-		return
-
-	def execute(self):
-		print('copy files')
-		if self.sessionconf.WebImage == 1:
-			#copy sky1.png
-			os.system('mkdir -p ' + self.sessionconf.WebImageDir)
-			for entry in os.scandir(self.sessionconf.resdir):
-				#print(entry.name)
-				if entry.name.endswith('_sky1.png'):
-					#print(entry.name)
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/sky1.png')
-				if entry.name.endswith('_cube.fits'):
-					#print(entry.name)
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/cube.fits')
-
-		if self.sessionconf.TimeLine == 1:
-			os.system('mkdir -p ' + self.sessionconf.TimeLineDir)
-			for entry in os.scandir(self.sessionconf.resdir):
-				#print(entry.name)
-				if  entry.name.endswith('_sky1.png'):
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.TimeLineDir)
-
-		return
 
 
 
@@ -71,6 +45,9 @@ def executePostAnalysis(filename):
 	if sessionconf.postanalysis == "copyfiles":
 		copyfiles = PostAnalysisCopyFiles(sessionconf)
 		copyfiles.execute()
+
+	merge_results = PostAnalysisMergeResults(sessionconf)
+	merge_results.execute()
 
 def pipeline_binned():
 	print('Run binned pipeline')
