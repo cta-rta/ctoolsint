@@ -98,6 +98,7 @@ class CToolsGammaPipe:
 		#pntdir.radec_deg(self.obsconf.obs_point_ra, self.obsconf.obs_point_dec)
 
 		tstart = self.obsconf.tstart - self.runconf.timeref
+		print(tstart)
 		if self.runconf.timeref_timesys == 'mjd':
 			tstart = tstart * 86400.
 
@@ -404,6 +405,10 @@ class CToolsGammaPipe:
 				os.system('mkdir -p ' + self.runconf.resdir)
 				shutil.copy('./results.xml', self.runconf.resdir + '/'+self.runconf.runprefix + '_results.xml')
 
+				if self.runconf.deleterun == "1":
+					if(self.runconf.rundir.startswith("/tmp/")):
+						cmd = 'rm -rf '+self.runconf.rundir
+						os.system(cmd)
 
 			if self.runconf.HypothesisGenerator3GH:
 				CTA3GHextractor_wrapper.print_graphs(self.simfilename, result_name, self.analysisfilename)
