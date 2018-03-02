@@ -18,10 +18,14 @@
 #
 # ==========================================================================
 
+
+from datetime import datetime
+
+print("before import")
+print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
 import os
 import shutil
-import gammalib
-import ctools
 import cscripts
 import CToolsGammaPipe
 from PipeConfiguration import CToolsRunConfiguration
@@ -29,6 +33,9 @@ from PipeConfiguration import PostAnalysisCopyFilesConfiguration
 from PostAnalysis import *
 from ImportResults import *
 
+
+print("after import")
+print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
 
 
@@ -81,15 +88,24 @@ def pipeline_binned():
 	print('postanalysis: ' + postanalysis)
 	print('results_xml: ' + results_xml)
 
+	print("before run pipe")
+	print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
 	if not postanalysis and not results_xml:
 
 		print("not postanalysis not results_xml")
 		gp = CToolsGammaPipe.CToolsGammaPipe()
 
 		gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
+		print("after init pipe")
+		print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
 		# Run analysis pipeline
 		gp.run_pipeline(seed=in_seed)
+
+		print("after run pipe")
+		print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
 
 	if results_xml:
 

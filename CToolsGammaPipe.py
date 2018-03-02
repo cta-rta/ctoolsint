@@ -18,6 +18,7 @@
 #
 # ==========================================================================
 
+from datetime import datetime
 import os
 import shutil
 import gammalib
@@ -33,6 +34,8 @@ from conf import *
 from math import ceil
 
 #import CTA3GHextractor_wrapper
+
+
 
 class CToolsGammaPipe:
 
@@ -209,7 +212,13 @@ class CToolsGammaPipe:
 			emax = self.runconf.emax
 			fov = self.obsconf.roi_fov
 			instrumentname = self.obsconf.instrument
+			print("before write fits")
+			print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 			events_name = write_fits(tstart_tt,tstop_tt,observationid,datarepositoryid,path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, 180, instrumentname)
+			print("after write fits")
+			print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
+
 			print("fitsname"+events_name)
 			if self.runconf.WorkInMemory == 2:
 				print('# Load event list from disk')
@@ -256,6 +265,8 @@ class CToolsGammaPipe:
 		if self.runconf.WorkInMemory == 0:
 			select.execute()
 
+		print("after select events")
+		print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
 		#print(self.runconf.roi_ra)
 		#print(self.runconf.roi_dec)
@@ -296,6 +307,8 @@ class CToolsGammaPipe:
 		for run in localobs:
 
 			print('run ---'+selected_events_name)
+			print("before ctbin")
+			print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
 			print(run)
 
@@ -356,7 +369,8 @@ class CToolsGammaPipe:
 
 				# Append result to observations
 				#localobs.extend(bin.obs())
-
+			print("after ctbin")
+			print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 			#print(obs)
 			#print(obs[0])
 			print(str(self.obsconf.caldb))
@@ -373,7 +387,9 @@ class CToolsGammaPipe:
 			#eseguire MLE
 			print('analysisfilename: ' + self.analysisfilename)
 			if self.analysisfilename:
-				print('MLE')
+				print('before MLE')
+				print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
 				# Perform maximum likelihood fitting
 
 				if self.runconf.WorkInMemory == 1:
@@ -391,6 +407,9 @@ class CToolsGammaPipe:
 				like.execute()
 				logL = like.opt().value()
 				print(logL)
+				print("after MLE")
+				print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
 				# insert logL into results.xml
 				tree = etree.parse(result_name)
 				contentnav = tree.find(".//source[@type='PointSource']")
@@ -407,7 +426,7 @@ class CToolsGammaPipe:
 
 				if self.runconf.deleterun == "1":
 					if(self.runconf.rundir.startswith("/tmp/")):
-						cmd = 'rm -rf '+self.runconf.rundir
+						cmd = 'rm -r '+self.runconf.rundir
 						os.system(cmd)
 
 			if self.runconf.HypothesisGenerator3GH:
