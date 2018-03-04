@@ -153,8 +153,6 @@ class ImportResults():
                 output = subprocess.Popen(cmd,shell=True, stdout=subprocess.PIPE,stderr=subprocess.STDOUT).stdout.read().decode('utf-8')
                 print(output)
 
-
-
             cursor.close()
             conn.close()
 
@@ -168,4 +166,4 @@ class ImportResults():
 if __name__ == '__main__':
 
     # Run binned in-memory pipeline
-    ImportResults.import_results(sys.argv[1])
+    ImportResults.import_results(sys.argv[1],1)
