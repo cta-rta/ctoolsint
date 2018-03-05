@@ -31,17 +31,11 @@ import CToolsGammaPipe
 from PipeConfiguration import CToolsRunConfiguration
 from PipeConfiguration import PostAnalysisCopyFilesConfiguration
 from PostAnalysis import *
-from ImportResults import *
 
 
 print("after import")
 print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
-
-
-def execute_import(results_xml):
-
-	ImportResults.import_results(results_xml,1)
 
 
 def executePostAnalysis(filename):
@@ -65,7 +59,7 @@ def pipeline_binned():
 	usage = 'ExecuteCTools.py [-observation obsfilename] [-simmodel simmodelfilename] [-anamodel analysismodelfilename] [-confpipe configuration pipe][-seed seed]'
 
 	# Set default options
-	options = [{'option': '-observation', 'value': ''}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': ''}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}, {'option': '-postanalysis', 'value': ''}, {'option': '-import', 'value': ''},]
+	options = [{'option': '-observation', 'value': ''}, {'option': '-simmodel', 'value': ''}, {'option': '-anamodel', 'value': ''}, {'option': '-runconf', 'value': ''}, {'option': '-eventfilename', 'value': ''}, {'option': '-seed', 'value': '0'}, {'option': '-postanalysis', 'value': ''},]
 
 	# Get arguments and options from command line arguments
 	args, options = cscripts.ioutils.get_args_options(options, usage)
@@ -78,7 +72,6 @@ def pipeline_binned():
 	eventfilename = options[4]['value']
 	in_seed = int(options[5]['value'])
 	postanalysis = options[6]['value']
-	results_xml = options[7]['value']
 
 	print('obsfilename: ' + obsfilename)
 	print('simfilename: ' + simfilename)
@@ -86,12 +79,11 @@ def pipeline_binned():
 	print('runconffilename: ' + runconffilename)
 	print('eventfilename: ' + eventfilename)
 	print('postanalysis: ' + postanalysis)
-	print('results_xml: ' + results_xml)
 
 	print("before run pipe")
 	print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
-	if not postanalysis and not results_xml:
+	if not postanalysis:
 
 		print("not postanalysis not results_xml")
 		gp = CToolsGammaPipe.CToolsGammaPipe()
@@ -105,11 +97,6 @@ def pipeline_binned():
 
 		print("after run pipe")
 		print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
-
-
-	if results_xml:
-
-		execute_import(results_xml)
 
 	if postanalysis:
 

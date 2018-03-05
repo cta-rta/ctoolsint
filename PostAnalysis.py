@@ -23,65 +23,50 @@
 import os
 import shutil
 from lxml import etree
-import glob
+import glob,sys
+from GammaPipeCommon.read_xml import read_xml
+from ImportResults import *
 
-class PostAnalysisCopyFiles:
-	def __init__(self, sessionconf):
-		self.sessionconf = sessionconf
-		return
+class PostAnalysis:
 
-	def execute(self):
-		print('copy files')
-		if self.sessionconf.WebImage == 1:
-			#copy sky1.png
-			os.system('mkdir -p ' + self.sessionconf.WebImageDir)
-			for entry in os.scandir(self.sessionconf.resdir):
-				#print(entry.name)
-				if entry.name.endswith('_sky1.png'):
-					#print(entry.name)
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/sky1.png')
-				if entry.name.endswith('_cube.fits'):
-					#print(entry.name)
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.WebImageDir + '/cube.fits')
+	def execute_postanalysis(session_xml):
 
-		if self.sessionconf.TimeLine == 1:
-			os.system('mkdir -p ' + self.sessionconf.TimeLineDir)
-			for entry in os.scandir(self.sessionconf.resdir):
-				#print(entry.name)
-				if  entry.name.endswith('_sky1.png'):
-					shutil.copy(self.sessionconf.resdir + '/' + entry.name, self.sessionconf.TimeLineDir)
+		info_dict = read_xml(session_xml)
 
-		return
+		#merge xml results file
 
-class PostAnalysisMergeResults:
+		parser = etree.XMLParser(remove_blank_text=True)
+		root = etree.Element("source_library",title="source library")
+		#create merget xml
 
-    def __init__(self, sessionconf):
-        self.sessionconf = sessionconf
-        return
+		res_dir = info_dict['session']['DirectoryList']['results']
 
-    def execute(self):
+		#for each restults.xml
+		count = 0
+		for results in glob.glob(res_dir+'/*_results.xml'):
+		    print(results)
 
-        parser = etree.XMLParser(remove_blank_text=True)
-        root = etree.Element("source_library",title="source library")
-        #create merget xml
+		    result = etree.parse(results,parser)
+		    #read source object and add to merged xml
+		    sources = result.findall("//source")
 
-        #for each restults.xml
-        count = 0
-        for results in glob.glob(self.sessionconf.resdir+'/*_results.xml'):
-            print(results)
+		    for source in sources:
+		        if(source.attrib["type"]=="PointSource"):
+		            count = count + 1
+		            name = source.attrib["name"]
+		            source.attrib["name"] = name+"-"+str(count)
 
-            result = etree.parse(results,parser)
-            #read source object and add to merged xml
-            sources = result.findall("//source")
+		            root.append(source)
 
-            for source in sources:
-                if(source.attrib["type"]=="PointSource"):
-                    count = count + 1
-                    name = source.attrib["name"]
-                    source.attrib["name"] = name+"-"+str(count)
-                    
-                    root.append(source)
+		f = open("results_merged.xml", 'w')
+		f.write(etree.tostring(root,encoding="unicode",pretty_print=True))
+		f.close()
 
-        f = open("results_merged.xml", 'w')
-        f.write(etree.tostring(root,encoding="unicode",pretty_print=True))
-        f.close()
+		import_analysis = ImportResults();
+
+		ImportResults.import_results("results_merged.xml",0)
+
+
+if __name__ == '__main__':
+
+    PostAnalysis.execute_postanalysis(sys.argv[1])

@@ -28,7 +28,7 @@ import os
 import subprocess
 
 
-class ImportResults():
+class ImportResults:
 
     def import_results(results_xml,check_alert):
         print("import"+str(results_xml))
@@ -97,7 +97,6 @@ class ImportResults():
 
                     #convert ra,dec to l,b
                     l,b = Utility.convert_fk5_to_gal(ra,dec)
-                    print(l)
 
                     #TODO
                     #check if already exist this detection
@@ -106,10 +105,21 @@ class ImportResults():
                     bpeak = -1
                     r = -1
 
+                    query_run = "select tstart,tstop,emin,emax,l,b from run r join energybin eb ON (eb.energybinid = r.energybinid) where runid = "+runid
+                    cursor.execute(query_run)
+                    row= cursor.fetchone()
+                    tstart = str(row['tstart']).replace(".0","")
+                    tstop = str(row['tstop']).replace(".0","")
+                    emin = str(row['emin']).replace(".0","")
+                    emax = str(row['emax']).replace(".0","")
+                    run_l = str(row['l']).replace(".0","")
+                    run_b = str(row['b']).replace(".0","")
+
+                    rootname = root_dir+"/T"+tstart+"_"+tstop+"_E"+emin+"_"+emax+"_P"+run_l+"_"+run_b
 
                     #insert detection into DB and call alert algorithm
                     query_insert = ("insert into detection (rootname,label,runid,l,b,r,ella,ellb,ellphi,lpeak,bpeak,flux,fluxerr,sqrtts,spectralindex,spectralindexerr)"
-                    " values ('"+str(root_dir)+"','"+str(name)+"',"+str(runid)+","+str(l)+","+str(b)+",0,"+str(ella)+","+str(ellb)+","+str(ellphi)+","+str(lpeak)+","+str(bpeak)+","+str(flux)+""
+                    " values ('"+str(rootname)+"','"+str(name)+"',"+str(runid)+","+str(l)+","+str(b)+",0,"+str(ella)+","+str(ellb)+","+str(ellphi)+","+str(lpeak)+","+str(bpeak)+","+str(flux)+""
                     ","+str(flux_err)+","+str(sqrtts)+","+str(spectral_index)+","+str(spectral_index_error)+")")
                     print(query_insert)
 
@@ -166,4 +176,4 @@ class ImportResults():
 if __name__ == '__main__':
 
     # Run binned in-memory pipeline
-    ImportResults.import_results(sys.argv[1],1)
+    ImportResults.import_results(sys.argv[1],sys.argv[2])
