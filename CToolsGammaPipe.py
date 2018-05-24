@@ -188,8 +188,6 @@ class CToolsGammaPipe:
 				tstart_tt = Utility.convert_mjd_to_tt(self.runconf.tmin)
 				tstop_tt = Utility.convert_mjd_to_tt(self.runconf.tmax)
 
-			datarepository_dictionary = get_data_repository()
-			datarepositoryid = datarepository_dictionary['datarepositoryid']
 			#tstart_tt = self.runconf.tmin
 			#tstop_tt = self.runconf.tmax
 			observationid = self.obsconf.id
@@ -212,6 +210,10 @@ class CToolsGammaPipe:
 			emax = self.runconf.emax
 			fov = self.obsconf.roi_fov
 			instrumentname = self.obsconf.instrument
+
+			datarepository_dictionary = get_data_repository(instrumentname)
+			datarepositoryid = datarepository_dictionary['datarepositoryid']
+
 			print("before write fits")
 			print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 			events_name = write_fits(tstart_tt,tstop_tt,observationid,datarepositoryid,path_base_fits, tref_mjd, obs_ra, obs_dec, emin, emax, 180, instrumentname)
@@ -336,8 +338,8 @@ class CToolsGammaPipe:
 				bin['emin']     = self.runconf.emin
 				bin['emax']     = self.runconf.emax
 				bin['enumbins'] = self.runconf.cts_enumbins
-				bin['nxpix']    = ceil(self.runconf.roi_ringrad / self.runconf.cts_binsz)
-				bin['nypix']    =  ceil(self.runconf.roi_ringrad / self.runconf.cts_binsz)
+				bin['nxpix']    = ceil(self.runconf.roi_ringrad*2 / self.runconf.cts_binsz)
+				bin['nypix']    =  ceil(self.runconf.roi_ringrad*2 / self.runconf.cts_binsz)
 				bin['binsz']    = self.runconf.cts_binsz
 				bin['coordsys'] = self.runconf.cts_coordsys
 				bin['usepnt']   = self.runconf.cts_usepnt # Use pointing for map centre
@@ -357,7 +359,7 @@ class CToolsGammaPipe:
 
 					if self.runconf.CtsMapToPng == 1:
 						title = 'OBS ' + str(self.obsconf.id) + ' / MJD ' + str(self.runconf.tmin) + ' - ' + 'MJD ' + str(self.runconf.tmax)
-						SkyImage.display(cubefile_name, "sky1.png", 3, title)
+						SkyImage.display(cubefile_name, "sky1.png", 2, title)
 						#SkyImage.dispalywithds9_cts1(cubefile_name, "sky2", 10)
 						#copy results
 						os.system('mkdir -p ' + self.runconf.resdir)
@@ -405,8 +407,11 @@ class CToolsGammaPipe:
 				like['irf']      = self.obsconf.irf
 				like['statistic'] = 'DEFAULT'
 				like.execute()
+				print(like)
 				logL = like.opt().value()
-				print(logL)
+				print(like.obs().models())
+
+
 				print("after MLE")
 				print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
@@ -414,7 +419,7 @@ class CToolsGammaPipe:
 				tree = etree.parse(result_name)
 				contentnav = tree.find(".//source[@type='PointSource']")
 				#contentdiv = contentnav.getparent()
-				contentnav.set("ts",str(logL))
+				#contentnav.set("ts",str(logL))
 				contentnav.set("runid",str(self.runconf.runid))
 				#print(etree.tostring(tree,encoding="unicode",pretty_print=True))
 				f = open(result_name, 'w')
@@ -425,9 +430,8 @@ class CToolsGammaPipe:
 				shutil.copy('./results.xml', self.runconf.resdir + '/'+self.runconf.runprefix + '_results.xml')
 
 				if self.runconf.deleterun == "1":
-					if(self.runconf.rundir.startswith("/tmp/")):
-						cmd = 'rm -r '+self.runconf.rundir
-						os.system(cmd)
+					cmd = 'rm -r '+self.runconf.rundir
+					os.system(cmd)
 
 			if self.runconf.HypothesisGenerator3GH:
 				CTA3GHextractor_wrapper.print_graphs(self.simfilename, result_name, self.analysisfilename)

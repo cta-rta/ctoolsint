@@ -24,6 +24,9 @@ from math import sqrt
 from GammaPipeCommon.utility import *
 from conf import get_pipedb_conf
 import mysql.connector as mysql
+import re
+import time
+
 import os
 import subprocess
 
@@ -108,19 +111,22 @@ class ImportResults:
                     query_run = "select tstart,tstop,emin,emax,l,b from run r join energybin eb ON (eb.energybinid = r.energybinid) where runid = "+runid
                     cursor.execute(query_run)
                     row= cursor.fetchone()
-                    tstart = str(row['tstart']).replace(".0","")
-                    tstop = str(row['tstop']).replace(".0","")
-                    emin = str(row['emin']).replace(".0","")
-                    emax = str(row['emax']).replace(".0","")
-                    run_l = str(row['l']).replace(".0","")
-                    run_b = str(row['b']).replace(".0","")
+
+                    tstart = re.sub(r"\.0$", "", str(row['tstart']))
+                    tstop = re.sub(r"\.0$", "", str(row['tstop']))
+                    emin = re.sub(r"\.0$", "", str(row['emin']))
+                    emax = re.sub(r"\.0$", "", str(row['emax']))
+                    run_l = re.sub(r"\.0$", "", str(row['l']))
+                    run_b = re.sub(r"\.0$", "", str(row['b']))
 
                     rootname = root_dir+"/T"+tstart+"_"+tstop+"_E"+emin+"_"+emax+"_P"+run_l+"_"+run_b
 
+                    import_time = time.time()
+            
                     #insert detection into DB and call alert algorithm
-                    query_insert = ("insert into detection (rootname,label,runid,l,b,r,ella,ellb,ellphi,lpeak,bpeak,flux,fluxerr,sqrtts,spectralindex,spectralindexerr)"
+                    query_insert = ("insert into detection (rootname,label,runid,l,b,r,ella,ellb,ellphi,lpeak,bpeak,flux,fluxerr,sqrtts,spectralindex,spectralindexerr,import_time)"
                     " values ('"+str(rootname)+"','"+str(name)+"',"+str(runid)+","+str(l)+","+str(b)+",0,"+str(ella)+","+str(ellb)+","+str(ellphi)+","+str(lpeak)+","+str(bpeak)+","+str(flux)+""
-                    ","+str(flux_err)+","+str(sqrtts)+","+str(spectral_index)+","+str(spectral_index_error)+")")
+                    ","+str(flux_err)+","+str(sqrtts)+","+str(spectral_index)+","+str(spectral_index_error)+","+str(import_time)+")")
                     print(query_insert)
 
                     cursor.execute(query_insert)

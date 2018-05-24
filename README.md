@@ -14,7 +14,8 @@ python ExecuteCTools.py -simmodel examples/background.xml -runconf examples/run_
 
 python ExecuteCTools.py -anamodel examples/target-3.xml -runconf examples/run-3-5697.xml -observation examples/obs-3.xml 
 
-#TODO only simulation
+#only simulation
+python ExecuteCTools.py -simmodel examples/example2source.xml -runconf examples/run_crab.xml -observation examples/obs_crab.xml
 
 python ExecuteCTools.py -simmodel examples/target-3.xml -observation examples/obs-3.xml 
 
