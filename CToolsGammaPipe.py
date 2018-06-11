@@ -399,13 +399,25 @@ class CToolsGammaPipe:
 
 				if self.runconf.WorkInMemory == 0:
 					like = ctools.ctlike()
-					like['inobs']    = selected_events_name
+
+					if(self.runconf.binned == "1"):
+						like['inobs']  = cubefile_name
+						like['expcube'] = "NONE"
+						like['psfcube'] = "NONE"
+						like['edispcube'] = "NONE"
+						like['bkgcube'] = "NONE"
+						like['statistic'] = "CHI2"
+
+					if(self.runconf.binned == "0"):
+						like['inobs']  = selected_events_name
+						like['statistic'] = "DEFAULT"
+
 
 				like['inmodel']  = self.analysisfilename
 				like['outmodel']  = result_name
 				like['caldb'] = str(self.obsconf.caldb)
 				like['irf']      = self.obsconf.irf
-				like['statistic'] = 'DEFAULT'
+				
 				like.execute()
 				print(like)
 				logL = like.opt().value()

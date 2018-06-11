@@ -1,0 +1,8 @@
+<observation id="1" instrument="CTA" name="Crab">
+  <parameter name="Pointing" ra="83.6331" dec="22.0145" frame="fk5" unit="deg" />
+  <parameter name="GoodTimeIntervals" tstartreal="55197.000766018518519" tendreal="55197.500766018518519" tstartplanned="55197.000766018518519" tendplanned="55197.500766018518519" timeunit="day" timesys="mjd" />
+  <parameter name="RegionOfInterest" ra="83.6331" dec="22.0145" rad="10" frame="fk5" unit="deg" />
+  <parameter name="Deadtime" deadc="1"  />
+  <parameter name="Calibration" database="prod2" response="South_0.5h" />
+  <parameter name="Energy" emin="0.1" emax="100"   />
+</observation>

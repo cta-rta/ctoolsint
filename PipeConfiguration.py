@@ -44,7 +44,7 @@ class CToolsRunConfiguration(RunConfiguration):
 		#self.cts_nypix = int(self.info_dict['run']['CountsMap']['nypix'])
 		self.cts_binsz = float(self.info_dict['run']['CountsMap']['binsz'])
 
-
+		self.binned = self.info_dict['run']['Binned']['value']
 		self.deleterun = self.info_dict['run']['DeleteRun']['value']
 
 		point_to_center_of_observation = self.info_dict['run']['CountsMap']['usepnt']

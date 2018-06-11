@@ -81,6 +81,7 @@ class ImportResults:
                     flux_err = parameter_prefactor.attrib['error']
                     flux_scale = parameter_prefactor.attrib['scale']
 
+            
                     parameter_index = spectrum_element.find("parameter[@name='Index']")
                     spectral_index = parameter_index.attrib['value']
                     spectral_index_error = parameter_index.attrib['error']
@@ -90,11 +91,17 @@ class ImportResults:
 
                     parameter_ra = spatial_model_element.find("parameter[@name='RA']")
                     ra = parameter_ra.attrib['value']
-                    ella = parameter_ra.attrib['error']
 
+                    if 'error' in  parameter_ra.attrib:
+                        ella = parameter_ra.attrib['error']
+                    else:
+                        ella = -1
                     parameter_dec = spatial_model_element.find("parameter[@name='DEC']")
                     dec = parameter_dec.attrib['value']
-                    ellb = parameter_dec.attrib['error']
+                    if 'error' in  parameter_dec.attrib:
+                        ellb = parameter_dec.attrib['error']
+                    else:
+                        ellb = -1
 
                     ellphi = 0
 
@@ -122,7 +129,7 @@ class ImportResults:
                     rootname = root_dir+"/T"+tstart+"_"+tstop+"_E"+emin+"_"+emax+"_P"+run_l+"_"+run_b
 
                     import_time = time.time()
-            
+
                     #insert detection into DB and call alert algorithm
                     query_insert = ("insert into detection (rootname,label,runid,l,b,r,ella,ellb,ellphi,lpeak,bpeak,flux,fluxerr,sqrtts,spectralindex,spectralindexerr,import_time)"
                     " values ('"+str(rootname)+"','"+str(name)+"',"+str(runid)+","+str(l)+","+str(b)+",0,"+str(ella)+","+str(ellb)+","+str(ellphi)+","+str(lpeak)+","+str(bpeak)+","+str(flux)+""
@@ -173,6 +180,7 @@ class ImportResults:
             conn.close()
 
         except Exception as e :
+            print("error")
             print(e)
 
 
