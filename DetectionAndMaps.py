@@ -37,7 +37,7 @@ from math import ceil
 
 
 
-class CToolsGammaPipe:
+class DetectionAndMaps:
 
 	def __init__(self):
 		return

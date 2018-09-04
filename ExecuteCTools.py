@@ -27,7 +27,7 @@ print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 import os
 import shutil
 import cscripts
-import CToolsGammaPipe
+import DetectionAndMaps
 from PipeConfiguration import CToolsRunConfiguration
 from PipeConfiguration import PostAnalysisCopyFilesConfiguration
 from PostAnalysis import *
@@ -86,7 +86,7 @@ def pipeline_binned():
 	if not postanalysis:
 
 		print("not postanalysis not results_xml")
-		gp = CToolsGammaPipe.CToolsGammaPipe()
+		gp = DetectionAndMaps.DetectionAndMaps()
 
 		gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
 		print("after init pipe")
