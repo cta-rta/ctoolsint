@@ -22,6 +22,7 @@ import sys
 from lxml import etree
 from math import sqrt
 from GammaPipeCommon.utility import *
+from conf import get_resultsdb_conf
 from conf import get_pipedb_conf
 import mysql.connector as mysql
 import re
@@ -48,10 +49,22 @@ class ImportResults:
         pipedb_port = conf_dictionary['port']
         pipedb_database = conf_dictionary['database']
 
+        conf_dictionary_results = get_resultsdb_conf()
+
+        resultsdb_hostname = conf_dictionary_results['host']
+        resultsdb_username = conf_dictionary_results['username']
+        resultsdb_password = conf_dictionary_results['password']
+        resultsdb_port = conf_dictionary_results['port']
+        resultsdb_database = conf_dictionary_results['database']
+
         try:
             # get events list
             conn = mysql.connect(host=pipedb_hostname, user=pipedb_username, passwd=pipedb_password, db=pipedb_database)
             cursor = conn.cursor(dictionary=True)
+
+            conn_results = mysql.connect(host=resultsdb_hostname, user=resultsdb_username, passwd=resultsdb_password, db=resultsdb_database)
+            cursor_results = conn_results.cursor(dictionary=True)
+
 
             tree = etree.parse(results_xml)
 
@@ -81,7 +94,7 @@ class ImportResults:
                     flux_err = parameter_prefactor.attrib['error']
                     flux_scale = parameter_prefactor.attrib['scale']
 
-            
+
                     parameter_index = spectrum_element.find("parameter[@name='Index']")
                     spectral_index = parameter_index.attrib['value']
                     spectral_index_error = parameter_index.attrib['error']
@@ -136,10 +149,10 @@ class ImportResults:
                     ","+str(flux_err)+","+str(sqrtts)+","+str(spectral_index)+","+str(spectral_index_error)+","+str(import_time)+")")
                     print(query_insert)
 
-                    cursor.execute(query_insert)
-                    conn.commit()
+                    cursor_results.execute(query_insert)
+                    conn_results.commit()
 
-                    detectionid = cursor.lastrowid
+                    detectionid = cursor_results.lastrowid
                     print("detectionid "+str(detectionid))
 
 
@@ -178,6 +191,8 @@ class ImportResults:
 
             cursor.close()
             conn.close()
+            cursor_results.close()
+            conn_results.close()
 
         except Exception as e :
             print("error")
