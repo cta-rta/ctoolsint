@@ -59,10 +59,10 @@ class ImportResults:
 
         try:
             # get events list
-            conn = mysql.connect(host=pipedb_hostname, user=pipedb_username, passwd=pipedb_password, db=pipedb_database)
+            conn = mysql.connect(host=pipedb_hostname, user=pipedb_username, passwd=pipedb_password, db=pipedb_database,port=pipedb_port)
             cursor = conn.cursor(dictionary=True)
 
-            conn_results = mysql.connect(host=resultsdb_hostname, user=resultsdb_username, passwd=resultsdb_password, db=resultsdb_database)
+            conn_results = mysql.connect(host=resultsdb_hostname, user=resultsdb_username, passwd=resultsdb_password, db=resultsdb_database,port=resultsdb_port)
             cursor_results = conn_results.cursor(dictionary=True)
 
 
