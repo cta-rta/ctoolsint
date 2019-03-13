@@ -1,0 +1,250 @@
+/opt/prod/CTA_BUILD2/pipeline_manager:/opt/prod/CTA_BUILD2/:/opt/anaconda3/envs/cta_pipe/lib/python3.6/site-packages
+16:33:15.135952413
+before import
+2019-02-14 15:33:15.176
+after import
+2019-02-14 15:33:16.454
+Run binned pipeline
+obsfilename: obs.xml
+simfilename: 
+analysisfilename: target.xml
+runconffilename: run.xml
+eventfilename: 
+postanalysis: 
+before run pipe
+2019-02-14 15:33:16.454
+not postanalysis not results_xml
+run
+Open observation
+observation
+prod2
+fk5
+6585.5
+TSTART 568987200.0
+=== GCTAObservation ===
+ Name ......................: 
+ Identifier ................: 1
+ Instrument ................: CTA
+ Event file ................: 
+ Event type ................: EventList
+ Statistic .................: cstat
+ Ontime ....................: 8639.99999987427 s
+ Livetime ..................: 8639.99999987427 s
+ Deadtime correction .......: 1
+ User energy range .........: undefined
+=== GCTAPointing ===
+ Pointing direction ........: (RA,Dec)=(83.6331,22.0145)
+=== GCTAResponseIrf ===
+ Caldb mission .............: cta
+ Caldb instrument ..........: prod2
+ Response name .............: South_0.5h
+ Energy dispersion .........: Not used
+ Save energy range .........: undefined
+=== GCTAEventList ===
+ Number of events ..........: 0 (disposed without possibility to recover)
+ Time interval .............: 61782.5007660185 - 61782.6007660185 days
+ Energy interval ...........: 0.1 - 100 TeV
+ Region of interest ........: RA=83.6331, DEC=22.0145 [0,0] Radius=5 deg
+=== GSkyRegions ===
+ Number of regions .........: 0
+pointing ra  83.6331 dec 22.0145 frame fk5
+point roi ra 83.6331 dec 22.0145 frame fk5
+run   roi ra 83.6331 dec 22.0145 frame fk5
+after init pipe
+2019-02-14 15:33:16.554
+# Load event list from DB
+tstart442801819.9999999
+tstop442801819.9999999
+mjd
+before write fits
+2019-02-14 15:33:16.554
+SELECT * FROM streaming_evt WHERE timerealtt > 442801819.9999999 AND timerealtt < 442802819.99999976 AND observationid = 1 AND datarepositoryid = 1
+13044
+after write fits
+2019-02-14 15:33:16.948
+fitsnameobs_1_442801819.9999999_442802819.99999976.fits
+# Select event list from disk
+after select events
+2019-02-14 15:33:17.004
+select --
+=== GApplication ===
+ Name ......................: ctselect
+ Version ...................: 1.5.2
+ inobs .....................: obs_1_442801819.9999999_442802819.99999976.fits
+ outobs ....................: selected_events.fits
+ prefix ....................: selected_
+ usepnt ....................: no
+ ra ........................: 83.6331
+ dec .......................: 22.0145
+ rad .......................: 5
+ tmin ......................: MJD 58130.02106481481
+ tmax ......................: MJD 58130.032638888886
+ emin ......................: 0.1
+ emax ......................: 100
+ phase .....................: NONE
+ expr ......................: 
+ usethres ..................: NONE
+ publish ...................: no
+ chatter ...................: 2
+ clobber ...................: yes
+ debug .....................: no
+ mode ......................: ql
+ logfile ...................: ctselect.log
+select --
+Event list generated ----------------------
+=== GObservations ===
+ Number of observations ....: 1
+ Number of models ..........: 0
+ Number of observed events .: 0
+ Number of predicted events : 0
+obs --
+=== GCTAObservation ===
+ Name ......................: 
+ Identifier ................: 1
+ Instrument ................: CTA
+ Event file ................: 
+ Event type ................: EventList
+ Statistic .................: cstat
+ Ontime ....................: 8639.99999987427 s
+ Livetime ..................: 8639.99999987427 s
+ Deadtime correction .......: 1
+ User energy range .........: undefined
+=== GCTAPointing ===
+ Pointing direction ........: (RA,Dec)=(83.6331,22.0145)
+=== GCTAResponseIrf ===
+ Caldb mission .............: cta
+ Caldb instrument ..........: prod2
+ Response name .............: South_0.5h
+ Energy dispersion .........: Not used
+ Save energy range .........: undefined
+=== GCTAEventList ===
+ Number of events ..........: 0 (disposed without possibility to recover)
+ Time interval .............: 61782.5007660185 - 61782.6007660185 days
+ Energy interval ...........: 0.1 - 100 TeV
+ Region of interest ........: RA=83.6331, DEC=22.0145 [0,0] Radius=5 deg
+=== GSkyRegions ===
+ Number of regions .........: 0
+obs 0 --
+run ---selected_events.fits
+before ctbin
+2019-02-14 15:33:17.004
+=== GCTAObservation ===
+ Name ......................: 
+ Identifier ................: 1
+ Instrument ................: CTA
+ Event file ................: 
+ Event type ................: EventList
+ Statistic .................: cstat
+ Ontime ....................: 8639.99999987427 s
+ Livetime ..................: 8639.99999987427 s
+ Deadtime correction .......: 1
+ User energy range .........: undefined
+=== GCTAPointing ===
+ Pointing direction ........: (RA,Dec)=(83.6331,22.0145)
+=== GCTAResponseIrf ===
+ Caldb mission .............: cta
+ Caldb instrument ..........: prod2
+ Response name .............: South_0.5h
+ Energy dispersion .........: Not used
+ Save energy range .........: undefined
+=== GCTAEventList ===
+ Number of events ..........: 0 (disposed without possibility to recover)
+ Time interval .............: 61782.5007660185 - 61782.6007660185 days
+ Energy interval ...........: 0.1 - 100 TeV
+ Region of interest ........: RA=83.6331, DEC=22.0145 [0,0] Radius=5 deg
+=== GSkyRegions ===
+ Number of regions .........: 0
+-- bin
+=== GApplication ===
+ Name ......................: ctbin
+ Version ...................: 1.5.2
+ inobs .....................: selected_events.fits
+ outcube ...................: cube.fits
+ ebinalg ...................: LOG
+ emin ......................: 0.1
+ emax ......................: 100
+ enumbins ..................: 1
+ ebinfile ..................: NONE
+ usepnt ....................: no
+ nxpix .....................: 500
+ nypix .....................: 500
+ binsz .....................: 0.02
+ coordsys ..................: CEL
+ proj ......................: CAR
+ xref ......................: 83.6331
+ yref ......................: 22.0145
+ publish ...................: no
+ chatter ...................: 2
+ clobber ...................: yes
+ debug .....................: no
+ mode ......................: ql
+ logfile ...................: ctbin.log
+after ctbin
+2019-02-14 15:33:18.369
+prod2
+analysisfilename: target.xml
+before MLE
+2019-02-14 15:33:18.369
+=== GApplication ===
+ Name ......................: ctlike
+ Version ...................: 1.5.2
+ inobs .....................: selected_events.fits
+ inmodel ...................: target.xml
+ expcube ...................: NONE
+ psfcube ...................: NONE
+ edispcube .................: NONE
+ bkgcube ...................: NONE
+ caldb .....................: prod2
+ irf .......................: South_0.5h
+ edisp .....................: no
+ outmodel ..................: results.xml
+ outcovmat .................: NONE
+ statistic .................: DEFAULT
+ refit .....................: no
+ fix_spat_for_ts ...........: no
+ chatter ...................: 2
+ clobber ...................: yes
+ debug .....................: no
+ mode ......................: ql
+ logfile ...................: ctlike.log
+=== GModels ===
+ Number of models ..........: 2
+ Number of parameters ......: 10
+=== GModelSky ===
+ Name ......................: Crab
+ Instruments ...............: all
+ Test Statistic ............: 12132.8121111895
+ Instrument scale factors ..: unity
+ Observation identifiers ...: all
+ Model type ................: PointSource
+ Model components ..........: "PointSource" * "PowerLaw" * "Constant"
+ Number of parameters ......: 6
+ Number of spatial par's ...: 2
+  RA .......................: 83.6331 [-360,360] deg (fixed,scale=1)
+  DEC ......................: 22.0145 [-90,90] deg (fixed,scale=1)
+ Number of spectral par's ..: 3
+  Prefactor ................: 5.52450763449334e-16 +/- 1.30299858455783e-17 [1e-23,1e-13] ph/cm2/s/MeV (free,scale=1e-16,gradient)
+  Index ....................: -2.47723870807662 +/- 0.0203781822790879 [-0,-5]  (free,scale=-1,gradient)
+  PivotEnergy ..............: 300000 [10000,1000000000] MeV (fixed,scale=1000000,gradient)
+ Number of temporal par's ..: 1
+  Normalization ............: 1 (relative value) (fixed,scale=1,gradient)
+=== GCTAModelIrfBackground ===
+ Name ......................: CTABackgroundModel
+ Instruments ...............: CTA-SOUTH
+ Instrument scale factors ..: unity
+ Observation identifiers ...: all
+ Model type ................: "PowerLaw" * "Constant"
+ Number of parameters ......: 4
+ Number of spectral par's ..: 3
+  Prefactor ................: 0.96590640511572 +/- 0.0152562570505261 [0.001,1000] ph/cm2/s/MeV (free,scale=1,gradient)
+  Index ....................: -0.00830197791511346 +/- 0.00969618921109496 [-5,5]  (free,scale=1,gradient)
+  PivotEnergy ..............: 1000000 [10000,1000000000] MeV (fixed,scale=1000000,gradient)
+ Number of temporal par's ..: 1
+  Normalization ............: 1 (relative value) (fixed,scale=1,gradient)WARNING: FITSFixedWarning: RADECSYS= 'FK5 ' / Coordinate system 
+the RADECSYS keyword is deprecated, use RADESYSa. [astropy.wcs.wcs]
+
+after MLE
+2019-02-14 15:33:19.602
+after run pipe
+2019-02-14 15:33:19.638
+16:33:19.733792081
