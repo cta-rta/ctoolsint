@@ -47,6 +47,13 @@ class CToolsRunConfiguration(RunConfiguration):
 		self.binned = self.info_dict['run']['Binned']['value']
 		self.deleterun = self.info_dict['run']['DeleteRun']['value']
 
+		#Onoff
+		self.onoff_ebinalg   = self.info_dict['run']['OnOff']['ebinalg']
+		self.onoff_enumbins  = self.info_dict['run']['OnOff']['enumbins']
+		self.onoff_bkgmethod = self.info_dict['run']['OnOff']['bkgmethod']
+		self.onoff_coordsys  = self.info_dict['run']['OnOff']['coordsys']
+		self.onoff_radius    = self.info_dict['run']['OnOff']['radius']
+
 		point_to_center_of_observation = self.info_dict['run']['CountsMap']['usepnt']
 		if(point_to_center_of_observation == "yes"):
 			self.cts_usepnt = True

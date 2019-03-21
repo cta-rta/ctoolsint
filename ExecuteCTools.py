@@ -28,6 +28,7 @@ import os
 import shutil
 import cscripts
 import DetectionAndMaps
+import DetectionOnOff
 from PipeConfiguration import CToolsRunConfiguration
 from PipeConfiguration import PostAnalysisCopyFilesConfiguration
 from PostAnalysis import *
@@ -87,6 +88,7 @@ def pipeline_binned():
 
 		print("not postanalysis not results_xml")
 		gp = DetectionAndMaps.DetectionAndMaps()
+		#gp = DetectionOnOff.DetectionOnOff()
 
 		gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
 		print("after init pipe")
