@@ -88,7 +88,7 @@ def pipeline_binned():
 		runconf = CToolsRunConfiguration(runconffilename)
 
 		print("not postanalysis not results_xml")
-		if runconf.onoff_analysis:
+		if runconf.onoff_analysis == 1:
 			print("starting on/off analysis")
 			gp = DetectionOnOff.DetectionOnOff()
 		else:
