@@ -9,5 +9,5 @@ source /opt/module/cta_rta_pipe_build2
 
 echo $PYTHONPATH
 date +"%T.%N"
-python $PIPELINE/ctoolsint/ExecuteCTools.py -anamodel target.xml -runconf run.xml -observation obs.xml
+python $PIPELINE/ctoolsint/ExecuteCTools.py -anamodel target.xml -runconf run.xml -observation obs.xml -simmodel target.xml
 date +"%T.%N"
