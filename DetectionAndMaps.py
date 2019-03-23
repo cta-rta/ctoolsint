@@ -26,7 +26,6 @@ import ctools
 from lxml import etree
 import obsutils
 from GammaPipeCommon.Configuration import ObservationConfiguration
-from PipeConfiguration import CToolsRunConfiguration
 from CTAGammaPipeCommon.create_fits import write_fits
 from GammaPipeCommon.utility import Utility
 from GammaPipeCommon.SkyImage import SkyImage
@@ -38,20 +37,17 @@ from math import ceil
 
 
 class DetectionAndMaps:
-
 	def __init__(self):
 		return
 
-	def init(self, obsfilename, simfilename, analysisfilename, runconffilename, eventfilename):
+	# TODO can we break the init() interface changing param?
+	#      can we put all information in a single configuration object?
+	def init(self, obsfilename, simfilename, analysisfilename, runconf, eventfilename):
 		self.obsfilename = obsfilename
 		self.simfilename = simfilename
 		self.analysisfilename = analysisfilename
-		self.runconffilename = runconffilename
+		self.runconf = runconf
 		self.eventfilename = eventfilename
-
-		# Setup run
-		if self.runconffilename:
-			self.runconf = CToolsRunConfiguration(self.runconffilename)
 
 		#print all attribute of a class
 		#attrs = vars(self.runconf)
@@ -61,7 +57,8 @@ class DetectionAndMaps:
 		if self.obsfilename:
 			self.obs = self.open_observation(self.obsfilename)
 
-		if self.runconffilename:
+		# TODO Can we stay without runconf?
+		if self.runconf:
 			if self.runconf.skyframeref == 'fk5':
 				print('pointing ra  ' + str(self.obsconf.point_ra) + ' dec ' + str(self.obsconf.point_dec) + ' frame ' + str(self.obsconf.point_frame))
 				print('point roi ra ' + str(self.obsconf.roi_ra) + ' dec ' + str(self.obsconf.roi_dec) + ' frame ' + str(self.obsconf.roi_frame))

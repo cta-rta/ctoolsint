@@ -85,12 +85,17 @@ def pipeline_binned():
 	print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
 	if not postanalysis:
+		runconf = CToolsRunConfiguration(runconffilename)
 
 		print("not postanalysis not results_xml")
-		gp = DetectionAndMaps.DetectionAndMaps()
-		#gp = DetectionOnOff.DetectionOnOff()
+		if runconf.onoff_analysis:
+			print("starting on/off analysis")
+			gp = DetectionOnOff.DetectionOnOff()
+		else:
+			print("starting detection and maps")
+			gp = DetectionAndMaps.DetectionAndMaps()
 
-		gp.init(obsfilename, simfilename, analysisfilename, runconffilename, eventfilename)
+		gp.init(obsfilename, simfilename, analysisfilename, runconf, eventfilename)
 		print("after init pipe")
 		print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
 
