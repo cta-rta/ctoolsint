@@ -48,11 +48,21 @@ class CToolsRunConfiguration(RunConfiguration):
 		self.deleterun = self.info_dict['run']['DeleteRun']['value']
 
 		#Onoff
-		self.onoff_ebinalg   = self.info_dict['run']['OnOff']['ebinalg']
-		self.onoff_enumbins  = self.info_dict['run']['OnOff']['enumbins']
-		self.onoff_bkgmethod = self.info_dict['run']['OnOff']['bkgmethod']
-		self.onoff_coordsys  = self.info_dict['run']['OnOff']['coordsys']
-		self.onoff_radius    = self.info_dict['run']['OnOff']['radius']
+		self.onoff_analysis = True if 'onoff' in self.info_dict['run']['ScienceToolReference'] and self.info_dict['run']['ScienceToolReference']['onoff'] else False
+		if self.onoff_analysis:
+			if 'OnOff' in self.info_dict['run']:
+				try:
+					self.onoff_ebinalg   = self.info_dict['run']['OnOff']['ebinalg']
+					self.onoff_enumbins  = self.info_dict['run']['OnOff']['enumbins']
+					self.onoff_bkgmethod = self.info_dict['run']['OnOff']['bkgmethod']
+					self.onoff_coordsys  = self.info_dict['run']['OnOff']['coordsys']
+					self.onoff_radius    = self.info_dict['run']['OnOff']['radius']
+				except KeyError as key:
+					print("Error: %s parameter is not in run config OnOff tag." % key)
+					exit(1)
+			else:
+				print("Error: need a OnOff param tag in run config")
+				exit(1)
 
 		point_to_center_of_observation = self.info_dict['run']['CountsMap']['usepnt']
 		if(point_to_center_of_observation == "yes"):
