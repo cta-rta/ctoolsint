@@ -126,7 +126,7 @@ class DetectionOnOff:
 		Test unbinned pipeline with FITS file saving
 		"""
 		# Set script parameters
-		events_name          = 'events.fits'
+		events_name          = self.eventfilename or 'events.fits'
 		cubefile_name 	     = ''
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
@@ -137,10 +137,9 @@ class DetectionOnOff:
 			exit(10)
 
 		############ Simulate events
-    # in on-off analysis we need a shift on observation DEC coord
+		# in on-off analysis we need a shift on observation DEC coord
 
 		if self.simfilename:
-
 			# Setup simulation model
 			self.obs.models(gammalib.GModels(self.simfilename))
 
@@ -242,10 +241,8 @@ class DetectionOnOff:
 		select['ra']     = self.runconf.roi_ra
 		select['dec']    = self.runconf.roi_dec
 		select['rad']    = self.runconf.roi_ringrad
-		# select['tmin']   = 'MJD ' + str(self.runconf.tmin)
-		# select['tmax']   = 'MJD ' + str(self.runconf.tmax)
-		select['tmin']   = 'NONE'
-		select['tmax']   = 'NONE'
+		select['tmin']   = 'MJD ' + str(self.runconf.tmin)
+		select['tmax']   = 'MJD ' + str(self.runconf.tmax)
 		select['emin']   = self.runconf.emin
 		select['emax']   = self.runconf.emax
 

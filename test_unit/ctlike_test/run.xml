@@ -8,7 +8,7 @@
 	<parameter name="MakeCtsMap" value="0" />
 	<parameter name="CountsMap" enumbins="1" nxpix="" nypix="" binsz="0.02" coordsys="CEL" proj="CAR" ebinalg="LOG" usepnt="no" />
 	<parameter name="HypothesisGenerator3GH" value="0" />
-  	<parameter name="CtsMapToPng" value="1" />
+  <parameter name="CtsMapToPng" value="1" />
 	<parameter name="DeleteRun" value="0" />
 	<parameter name="Binned" value="0" />
 </run>
