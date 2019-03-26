@@ -130,7 +130,7 @@ class DetectionAndMaps:
 		Test unbinned pipeline with FITS file saving
 		"""
 		# Set script parameters
-		events_name          = 'events.fits'
+		events_name          = self.eventfilename or 'events.fits'
 		cubefile_name 	     = ''
 		selected_events_name = 'selected_events.fits'
 		result_name          = 'results.xml'
