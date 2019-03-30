@@ -9,5 +9,5 @@ source /opt/module/cta_rta_pipe_build2
 
 echo $PYTHONPATH
 date +"%T.%N"
-python $PIPELINE/ctoolsint/ExecuteCTools.py -anamodel target.xml -runconf run.xml -observation obs.xml -eventfilename obs_1_442801819.9999999_442802819.99999976.fits 
+python $PIPELINE/ctoolsint/ExecuteCTools.py -anamodel target.xml -runconf run.xml -observation obs.xml -eventfilename onoff_events.fits
 date +"%T.%N"
