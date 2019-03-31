@@ -151,8 +151,18 @@ class DetectionAndMaps:
 			if self.runconf.WorkInMemory == 0:
 				print('# Generate simulated event list on disk')
 				# Simulate events on disk
-				sim = ctools.ctobssim(self.obs)
+				sim = ctools.ctobssim()
+				sim['inmodel'] = 'target.xml'
 				sim['outevents'] = events_name
+				sim['caldb'] = 'prod2'
+				sim['irf'] = 'South_0.5h'
+				sim['ra'] = self.obsconf.roi_ra
+				sim['dec'] = self.obsconf.roi_dec
+				sim['rad'] = self.obsconf.roi_fov
+				sim['tmin'] = "MJD "+str(self.obsconf.tstart)
+				sim['tmax'] = "MJD "+str(self.obsconf.tstop)
+				sim['emin'] = self.obsconf.emin
+				sim['emax'] = self.obsconf.emax
 				sim['debug'] = debug
 				sim['seed']    = seed
 				sim.execute()
@@ -414,7 +424,7 @@ class DetectionAndMaps:
 				like['outmodel']  = result_name
 				like['caldb'] = str(self.obsconf.caldb)
 				like['irf']      = self.obsconf.irf
-				
+
 				like.execute()
 				print(like)
 				logL = like.opt().value()
