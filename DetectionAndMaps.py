@@ -152,7 +152,7 @@ class DetectionAndMaps:
 				print('# Generate simulated event list on disk')
 				# Simulate events on disk
 				sim = ctools.ctobssim()
-				sim['inmodel'] = 'target.xml'
+				sim['inmodel'] = self.simfilename
 				sim['outevents'] = events_name
 				sim['caldb'] = 'prod2'
 				sim['irf'] = 'South_0.5h'
