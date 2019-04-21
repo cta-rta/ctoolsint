@@ -68,6 +68,8 @@ class CToolsRunConfiguration(RunConfiguration):
 			self.cts_usepnt = True
 		else:
 			self.cts_usepnt = False
+	def __str__(self):
+		return str(self.__class__) +": "+ str(self.__dict__)
 
 class PostAnalysisCopyFilesConfiguration(PostAnalysisConfiguration):
 	def __init__(self, sessionconffilename):
