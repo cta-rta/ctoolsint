@@ -57,7 +57,7 @@ class CToolsRunConfiguration(RunConfiguration):
 				exit(1)
 
 			for param in ['ebinalg', 'enumbins', 'bkgmethod', 'coordsys', 'radius']:
-				if onoff_params.has_key(param):
+				if param in onoff_params:
 					setattr(self, 'onoff_'+param, onoff_params[param])
 				else:
 					print("Error: '%s' parameter is not in run config OnOff tag." % param)
