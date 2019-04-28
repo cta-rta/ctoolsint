@@ -1,9 +1,0 @@
-2019-03-27T15:18:49: ********************************************************************************
-2019-03-27T15:18:49: *                                   ctobssim                                   *
-2019-03-27T15:18:49: * ---------------------------------------------------------------------------- *
-2019-03-27T15:18:49: * Version: 1.5.2                                                               *
-2019-03-27T15:18:49: ********************************************************************************
-2019-03-27T15:18:53: *** ERROR encounterted in the execution of ctobssim. Run aborted ...
-2019-03-27T15:18:53: *** ERROR in GGti::insert_gti(int&, GTime&, GTime&): Invalid argument. Invalid time interval specified. Start time 253411133.816 s (TT) can not be later than stop time -315517936.084 s (TT).
-2019-03-27T15:18:53: 
-2019-03-27T15:18:53: Application "ctobssim" terminated after 4 wall clock seconds, consuming 0 seconds of CPU time.
