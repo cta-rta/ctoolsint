@@ -42,11 +42,11 @@ def run_pipeline():
 def init_params():
 	usage = 'ExecuteCTools.py [-observation obsfilename] [-simmodel simmodelfilename] [-anamodel analysismodelfilename] [-confpipe configuration pipe][-seed seed]'
 	options = [
-			{'option': '-observation', 'value': ''},
-			{'option': '-simmodel',      'value': ''},
+			{'option': '-observation',   'value': ''}, # observation config
+			{'option': '-simmodel',      'value': ''}, # simulation model
 			{'option': '-anamodel',      'value': ''},
 			{'option': '-runconf',       'value': ''},
-			{'option': '-eventfilename', 'value': ''},
+			{'option': '-eventfilename', 'value': ''}, # events file
 			{'option': '-seed',          'value': '0'},
 			{'option': '-postanalysis',  'value': ''}
 	]
@@ -89,8 +89,7 @@ def executeDetection(params):
 	"""
 	logging.debug('runconf file: %s' % params['runconffilename'])
 	params['runconf'] = CToolsRunConfiguration(params['runconffilename'])
-	logging.debug('params[runconf]: %s' % params['runconf'])
-	exit(0)
+	# logging.debug('params[runconf]: %s' % params['runconf'])
 	gp = Detection.Detection(params) # obsfilename, simfilename, analysisfilename, runconf, eventfilename)
 	gp.run_pipeline(seed=params['in_seed'])
 	# if runconf.onoff_analysis == 1:
